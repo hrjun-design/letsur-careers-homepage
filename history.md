@@ -4,6 +4,60 @@
 
 ---
 
+## 2026-09-14 (월) — 작업 기록 (2차, Vercel 배포 완료 + Figma 반영 채용공고 관리자 화면 스타일링)
+
+**완료**
+
+- **Vercel 배포 완료** (`https://letsur-careers-homepage-two.vercel.app`) — Import 단계에서 환경변수 Key/Value 입력이 뒤바뀐 실수 정정, Project Name 필드 포커스 문제로 Deploy 버튼이 비활성으로 보이던 이슈는 새로고침으로 해소. 첫 배포는 환경변수 없이 시도했다가 `/recruit/[slug]`가 빌드 타임에 Supabase URL을 요구해 실패(`supabaseUrl is required`) — 환경변수(`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_SUPABASE_URL`) 등록 후 재배포로 성공. WebFetch로 홈·`/recruit` 정상 렌더링 확인
+- **관리자 대시보드 로그인 확인 완료** — 배포 URL(`/admin/login`)로 사용자가 실제 로그인 성공
+- **git 자동배포 구조 안내** — `main`→Production, `staging`→Preview 자동 배포, 리모트는 반드시 `personal`로 푸시할 것(`origin`은 조직 소유 미사용), Preview도 Production과 동일 Supabase(같은 DB)를 바라봐 데이터가 공유된다는 점 안내
+- **Figma 기준 `/admin/recruit` 목록 화면 스타일 다수 반영** (node 1173:11747 → 11768 → 11766 → 11773, 총 4회 대조하며 순차 수정):
+  - 상태 배지 상시 노출로 변경(라이브 여부와 무관), 라벨을 "완료"(민트)/"마감"·"초안"(그레이)로 도입 → 이후 사용자 요청으로 "작성 완료"/"채용 마감"/"작성 중"으로 재명명
+  - "직군·경력·고용형태" 열 삭제(피그마에서 빠짐), 제목 열의 `/recruit/{slug}` 서브텍스트 제거
+  - 작업 열: 기존 공개/마감/초안 인라인 텍스트 토글 버튼 제거 → 수정(연필 아이콘)·삭제 pill 버튼 2개로 단순화(상태 변경은 수정 폼에서)
+  - 카드(Card/CardHeader/CardContent) UI 제거 → 레이아웃의 기존 `p-10` 패딩을 그대로 쓰는 플레인 컨테이너로 전환, 타이틀 `text-lg`·버튼 라벨 `font-semibold`로 확대
+  - 헤더 셀 높이 40px(중간에 50px 시도했다가 최종 40px로 정정) + 배경 고정 회색(`#f9f9f9`) 적용
+  - 상태 배지 높이(`h-5`→`h-[29px]`)를 수정/삭제 버튼과 맞춤, 공개여부·상태·작업 3열 너비 `w-[168px]`로 통일
+  - "새 공고 등록" 버튼 배경을 실제 `--primary`(짙은 회색) 대신 피그마 지정 teal-600(`#00ab7f`)으로 오버라이드(검정 테두리는 추가했다가 사용자 확인 후 제거)
+  - 제목 텍스트 클릭 시에도 수정 페이지로 이동하도록 추가
+  - "공개중"→"공개" 라벨 변경, 공개/비공개 텍스트를 semibold로 올렸다가 상태 배지·수정/삭제 버튼과 함께 최종 font-medium으로 통일
+  - 매 변경마다 `tsc --noEmit` 통과 확인(로컬 서버는 dev 미기동 상태였다가 이번 세션에 재기동해 포트 3002 확인)
+
+**진행 중 · 대기**
+
+- [ ] 이번 세션의 스타일 변경분 — 아직 커밋·푸시 안 함, 로컬 반영만 된 상태
+- 그 외 이월 항목은 상위 `../history.md` 참고
+
+---
+
+## 2026-09-14 (월) — 작업 기록 (관리자 대시보드 UI 다듬기 + GitHub·Vercel 배포 착수)
+
+**완료**
+
+- **관리자 대시보드 헤더에 프로필 메뉴 신설(`UserMenu`)** — 원형 아바타 클릭 시 드롭다운으로 계정 정보(이메일)·계정 설정(이름·비밀번호 변경)·로그아웃 노출. 기존 사이드바 푸터의 이메일·로그아웃은 중복이라 제거. 관리자가 전혜림 혼자가 아니게 될 걸 감안해 `user_metadata.full_name`을 이름 저장 위치로 써서 "관리자"라는 고정 라벨 대신 각자 실명이 뜨도록(미등록 시 이메일 앞부분으로 폴백)
+- **`/admin/recruit` 등록·수정 UX 전면 개편**:
+  - 1차: 폼을 상단 고정 → 목록 최상단 + "새 공고 등록" 버튼 → Dialog 모달(웹플로우 CMS 레퍼런스)
+  - 2차: 사용자가 슈퍼베이스 대시보드 레퍼런스 제시 — Dialog 팝업 대신 **같은 카드 영역 안에서 목록↔폼 전환**(상단에 `← 전체 공고` 뒤로가기 링크만) 방식으로 재변경
+  - 목록의 상태 표시를 "공개 여부"(라이브 여부: 공개중/비공개)와 "상태"(백오피스 내부 사유: 초안/마감)로 분리해 나란히 배치, 작업 버튼도 상태변경(공개·마감·초안) 묶음과 수정·삭제 묶음을 구분자로 분리. "초안으로" 라벨은 번역투라 "초안"으로 통일
+- **⚠️ 원인 규명한 버그 — 프로젝트 전역 Dialog/Sheet/Tooltip 폭 깨짐**: 이 프로젝트 Tailwind 테마가 `--spacing-*`를 named 스케일(sm/md/lg/xl/2xl/3xl)로 재정의해두면서, `max-w-sm`·`max-w-2xl` 같은 named 사이즈 클래스가 화면폭이 아니라 그 작은 spacing 토큰으로 잘못 매핑되던 문제(`max-w-sm`이 실측 6px). 이 앱의 모든 Dialog가 원래부터 세로로 찌그러져 있던 근본 원인 — `dialog.tsx`·`sheet.tsx`(모바일 사이드바)·`tooltip.tsx` 전부 `max-w-[Xrem]` 임의값으로 교체해 수정, 재발 방지 주석 추가
+- **카드 컴포넌트(`card.tsx`) 스타일 조정** — 그림자(`shadow-sm`) 추가, 라운드값 축소(`rounded-xl`→`rounded-lg`), 좌우 패딩은 24px 유지(40px로 바꿨다가 "카드 바깥 여백을 말한 것"이라는 정정으로 되돌림), 대신 `(dashboard)/layout.tsx`의 콘텐츠 래퍼 패딩을 40px(`p-10`)로 통일해 헤더~카드 간격도 맞춤
+- **GitHub·Vercel 배포 착수** — 사용자가 크롬 "피그마 캡처" 확장으로 이 관리자 대시보드를 캡처하고 싶어했으나 로컬호스트에서는 확장이 안 먹혀 실제 배포 URL 필요(에이블캠퍼스팀의 `start-capture-server.command`는 정적 HTML이라 로컬호스트로도 됐던 것과 달리, 이건 Supabase 로그인 붙은 실제 앱이라 다름). 겸사겸사 계속 이월되던 "별도 git repo·Vercel 프로젝트 셋업" TODO를 이번에 착수:
+  - `letsur-careers-3.0/` 루트에 git 저장소 신설(형제 프로젝트 `letsur-homepage-3.0`과 동일하게 `next-app/`을 하위에 둔 구조), `.gitignore` 작성, `main`/`staging` 브랜치 생성(각각 정식 배포/스테이징 프리뷰 용도)
+  - 처음엔 `letsur-dev` 조직 소유로 `letsur-careers-homepage` 저장소 생성 후 푸시했으나, **Vercel Hobby(무료) 플랜은 "조직 소유 + Private" 조합의 저장소를 import 불가**(Pro 플랜 요구)라는 걸 이번에 확인 — 조직 정책상 저장소 소유권 이전도 막혀있어(`Organization members cannot transfer repositories`), 개인 GitHub 계정(`hrjun-design`)에 동명 저장소를 새로 만들어 `main`·`staging`을 그쪽으로 재푸시. 로컬엔 `origin`(조직 소유, 현재 빈 채로 미사용)과 `personal`(실사용) 두 remote가 남아있는 상태
+  - Vercel 프로젝트 Import는 사용자가 직접 진행 중(로그인·GitHub 앱 연동 승인 등 계정 인증이 필요한 단계라 위임) — Root Directory `next-app` 지정 + Supabase 환경변수 2개(`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`) 등록 안내까지 완료
+
+**진행 중 · 대기**
+
+- [ ] Vercel 프로젝트 Import 마무리 (Root Directory·환경변수 설정 후 Deploy) — 개인 저장소로 재시도하는 중, 다음 세션에서 이어서 확인
+- [ ] 배포 완료 후 Production(main) URL로 피그마 "캡처" 크롬 확장 실제 테스트
+- [ ] `staging` 브랜치 프리뷰 배포 확인 — 최초 Import 시점에 안 뜨면 `staging`에 커밋 한 번 더 푸시해서 트리거 필요
+- [ ] `letsur-dev/letsur-careers-homepage`(조직 소유, 현재 미사용·빈 저장소) 정리 — 삭제하려면 조직 관리자 권한 필요, 방치해도 무방하나 언젠가 정리 고려
+- [ ] 관리자 대시보드 로그인 후 실제 화면 재확인 — 이번 세션에 UI를 많이 바꿔서(프로필 메뉴·목록/폼 전환·상태 표시 분리 등) 재확인 필요성 커짐, 계속 이월 중
+- [ ] 채용페이지 반응형(모바일) 크로스체크 — 여전히 미착수, 계속 이월 중
+- [ ] 채용공고 "인재풀 등록" 통합 구조 UI 시안 — 계속 이월 중
+
+---
+
 ## 2026-09-11 (금) — 작업 기록 (3차, Supabase 백엔드 구축 + 관리자 대시보드)
 
 **완료**

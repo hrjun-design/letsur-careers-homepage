@@ -112,7 +112,7 @@ export function AppSidebar() {
                     render={<Link href={item.url} />}
                     isActive={pathname === item.url}
                     tooltip={item.title}
-                    className="h-9 text-base"
+                    className="h-9 text-sm"
                   >
                     <item.icon />
                     <span>{item.title}</span>

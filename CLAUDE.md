@@ -12,9 +12,11 @@
 
 1. **메인 렛서 홈페이지와 완전히 독립된 배포.** `letsur-homepage-3.0`의 GNB·Footer·컴포넌트를 공유하지 않는다 — 이 사이트만의 `GlobalNav`/`Footer`를 별도로 가진다.
 2. **스택은 메인 홈페이지와 동일하게 맞춤(브랜드 일관성)** — Next.js 15 + Tailwind v4, `src/tokens/base.css`/`tokens.css`를 그대로 복사해 디자인 토큰 공유(자동 동기화 아님 — 토큰 변경 시 양쪽 수동 반영 필요).
-3. **⚠️ TODO — 별도 git repo·Vercel 프로젝트 미생성.** 현재는 로컬 폴더 구조만 존재(`렛서 디자인 개선/projects/렛서 홈페이지 정비/letsur-careers-3.0/`). 실제 배포 시점에 GitHub repo 분리 + Vercel 프로젝트 생성 + `careers.letsur.ai` 도메인 연결(현재 Webflow가 물고 있는 도메인을 이관) 작업 필요.
+3. **GitHub repo 착수 (2026-09-14)** — 이 폴더(`letsur-careers-3.0/`) 루트가 git 저장소, `main`(정식 배포용)·`staging`(프리뷰용) 브랜치 운영. 저장소: `https://github.com/hrjun-design/letsur-careers-homepage`(전혜림 개인 계정 — 조직(`letsur-dev`) 소유 + Private 조합은 Vercel Hobby 플랜에서 import 불가해 개인 계정으로 이동). 로컬 remote는 `personal`(실사용)과 `origin`(조직 소유, 현재 빈 채로 미사용) 둘 다 등록돼 있음 — 헷갈리지 말 것, 푸시는 `personal`로.
+   - **⚠️ TODO — Vercel 프로젝트 Import 진행 중.** Root Directory는 반드시 `next-app`으로 지정(레포 루트가 아님). 환경변수 `NEXT_PUBLIC_SUPABASE_URL`·`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` 등록 필요. `careers.letsur.ai` 도메인 연결(현재 Webflow가 물고 있는 도메인 이관)은 아직 별개 후속 작업.
 4. **로컬 dev 포트: 3002** (메인 홈페이지가 3001을 쓰는 경우가 많아 충돌 방지).
 5. **⚠️ `next/image`는 항상 `fill` + 크기 지정된 `relative` 부모 컨테이너 패턴만 사용한다.** `width`/`height` props(비-fill 모드)에 그보다 작은 CSS 높이 클래스(`h-[40px]` 등, 표준 스케일도 동일)를 얹으면 이미지가 완전히 안 보이는 버그를 실제로 겪음(2026-09-09, `InvestorLogos.tsx`). 원인 미규명 — 재발 방지 차원에서 이 패턴 자체를 금지.
+6. **관리자(`/admin/recruit`) 직군·경력사항·고용형태는 하드코딩이 아니라 Supabase 참조 테이블(`job_groups`·`careers`·`employment_types`, 전부 `slug`/`name`/`sort_order` 동일 구조)로 분리, 각각 전용 관리 화면(`/admin/recruit/{job-groups,careers,employment-types}`)을 둠.** 실서버(Webflow `careers.letsur.ai`)가 이 3개를 별도 CMS Collection으로 운영 중이라 그 구조를 그대로 이관 — "채용 공고"(`jobs` 테이블)가 이 3개 테이블을 참조(FK)하는 방식도 동일. 목적은 소연님·태희님이 개발자 없이 직접 옵션을 추가·수정·삭제할 수 있게 하는 것(예: 고용형태에 "프리랜서" 추가). 3개 관리 화면은 `RefCollectionManager` 공용 컴포넌트 하나로 구현(2026-09-11).
 
 ## 파일 구조
 

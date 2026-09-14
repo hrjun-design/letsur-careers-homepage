@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ChevronLeft, Plus } from "lucide-react";
+import { ChevronLeft, Pencil, Plus } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/admin/rich-text-editor";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -56,16 +56,13 @@ const emptyForm = {
   status: "draft" as JobRow["status"],
 };
 
-const STATUS_LABEL: Record<JobRow["status"], string> = {
-  draft: "초안",
-  open: "공개중",
-  closed: "마감",
-};
-
-const STATUS_VARIANT: Record<JobRow["status"], "secondary" | "default" | "outline"> = {
-  draft: "secondary",
-  open: "default",
-  closed: "outline",
+// 2026-09-14 — 피그마 반영: "상태" 배지를 라이브 여부와 무관하게 항상 표시.
+// open(라이브 중)은 "완료"(민트) — 백오피스 작업이 끝났다는 의미, draft/closed는 동일한
+// 뉴트럴 톤으로 "초안"/"마감" 표시.
+const ADMIN_STATUS_BADGE: Record<JobRow["status"], { label: string; className: string }> = {
+  draft: { label: "작성 중", className: "bg-[#fafafa] border-[#d9dbde] text-[#6e6e6e]" },
+  closed: { label: "채용 마감", className: "bg-[#fafafa] border-[#d9dbde] text-[#6e6e6e]" },
+  open: { label: "작성 완료", className: "bg-[#f6fef9] border-[#87ebbe] text-[#00ab7f]" },
 };
 
 // 2026-09-14 — 목록에서 "공개 여부(실제 라이브 중인지)"와 "백오피스 내부 상태(왜 라이브가
@@ -191,15 +188,6 @@ export default function AdminRecruitPage() {
     setFormOpen(true);
   };
 
-  const setStatus = async (job: JobRow, status: JobRow["status"]) => {
-    const { error } = await supabase.from("jobs").update({ status }).eq("id", job.id);
-    if (error) {
-      setError(error.message);
-      return;
-    }
-    loadJobs();
-  };
-
   const handleDelete = async (job: JobRow) => {
     if (!confirm(`"${job.title}" 공고를 삭제할까요? 되돌릴 수 없습니다.`)) return;
     const { error } = await supabase.from("jobs").delete().eq("id", job.id);
@@ -313,13 +301,13 @@ export default function AdminRecruitPage() {
                 onChange={(e) => setForm((f) => ({ ...f, apply_url: e.target.value }))}
                 placeholder="지원 링크 (외부 채용 플랫폼 URL, 선택)"
               />
-              <Textarea
-                value={form.description_html}
-                onChange={(e) => setForm((f) => ({ ...f, description_html: e.target.value }))}
-                placeholder="상세 설명 (HTML — 향후 리치텍스트 에디터로 교체 예정, 지금은 HTML 직접 입력)"
-                rows={6}
-                className="font-mono text-base"
-              />
+              <div className="flex flex-col gap-1">
+                <label className="text-sm text-muted-foreground">상세 설명</label>
+                <RichTextEditor
+                  value={form.description_html}
+                  onChange={(html) => setForm((f) => ({ ...f, description_html: html }))}
+                />
+              </div>
               <Select
                 items={STATUS_ITEMS}
                 value={form.status}
@@ -350,38 +338,41 @@ export default function AdminRecruitPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       {error && <p className="rounded-md bg-red-50 px-4 py-2 text-base text-red-600">{error}</p>}
 
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>전체 공고 ({jobs.length})</CardTitle>
-          <Button type="button" onClick={handleCreate}>
-            <Plus />
-            새 공고 등록
-          </Button>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>제목</TableHead>
-                <TableHead>공개 여부</TableHead>
-                <TableHead>상태</TableHead>
-                <TableHead>직군 · 경력 · 고용형태</TableHead>
-                <TableHead className="text-right">작업</TableHead>
-              </TableRow>
-            </TableHeader>
+      <div className="flex flex-row items-center justify-between">
+        <span className="text-lg font-semibold text-[#0a0a0a]">전체 공고 ({jobs.length})</span>
+        <Button
+          type="button"
+          onClick={handleCreate}
+          className="rounded bg-[#00ab7f] font-semibold text-white hover:bg-[#00ab7f]/90"
+        >
+          <Plus />
+          새 공고 등록
+        </Button>
+      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="h-[40px] bg-[#f9f9f9]">제목</TableHead>
+            <TableHead className="h-[40px] w-[168px] bg-[#f9f9f9]">공개 여부</TableHead>
+            <TableHead className="h-[40px] w-[168px] bg-[#f9f9f9]">상태</TableHead>
+            <TableHead className="h-[40px] w-[168px] bg-[#f9f9f9] text-right">작업</TableHead>
+          </TableRow>
+        </TableHeader>
             <TableBody>
               {jobs.map((job) => (
                 <TableRow key={job.id}>
-                  <TableCell className="font-medium">
+                  <TableCell
+                    className="cursor-pointer font-medium hover:underline"
+                    onClick={() => handleEdit(job)}
+                  >
                     {job.title}
-                    <p className="text-sm text-muted-foreground">/recruit/{job.slug}</p>
                   </TableCell>
                   <TableCell>
                     <span
-                      className={`inline-flex items-center gap-1.5 text-sm ${
+                      className={`inline-flex items-center gap-1.5 text-sm font-medium ${
                         IS_LIVE(job.status) ? "text-[#00ab7f]" : "text-muted-foreground"
                       }`}
                     >
@@ -390,60 +381,47 @@ export default function AdminRecruitPage() {
                           IS_LIVE(job.status) ? "bg-[#00ab7f]" : "bg-muted-foreground/40"
                         }`}
                       />
-                      {IS_LIVE(job.status) ? "공개중" : "비공개"}
+                      {IS_LIVE(job.status) ? "공개" : "비공개"}
                     </span>
                   </TableCell>
                   <TableCell>
-                    {!IS_LIVE(job.status) && (
-                      <Badge variant={STATUS_VARIANT[job.status]}>{STATUS_LABEL[job.status]}</Badge>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-base text-muted-foreground">
-                    {job.job_groups?.name} · {job.careers?.name} · {job.employment_types?.name}
+                    <Badge
+                      variant="outline"
+                      className={`h-[29px] rounded px-3 py-[5px] text-[13px] font-medium ${ADMIN_STATUS_BADGE[job.status].className}`}
+                    >
+                      {ADMIN_STATUS_BADGE[job.status].label}
+                    </Badge>
                   </TableCell>
                   <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-3 text-base">
-                      <div className="flex items-center gap-3">
-                        {job.status !== "open" && (
-                          <button type="button" onClick={() => setStatus(job, "open")} className="text-[#00ab7f] underline">
-                            공개
-                          </button>
-                        )}
-                        {job.status !== "closed" && (
-                          <button type="button" onClick={() => setStatus(job, "closed")} className="underline">
-                            마감
-                          </button>
-                        )}
-                        {job.status !== "draft" && (
-                          <button type="button" onClick={() => setStatus(job, "draft")} className="underline">
-                            초안
-                          </button>
-                        )}
-                      </div>
-                      <span className="h-4 w-px bg-border" />
-                      <div className="flex items-center gap-3">
-                        <button type="button" onClick={() => handleEdit(job)} className="underline">
-                          수정
-                        </button>
-                        <button type="button" onClick={() => handleDelete(job)} className="text-red-600 underline">
-                          삭제
-                        </button>
-                      </div>
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleEdit(job)}
+                        className="flex items-center gap-0.5 rounded border border-[#d9dbde] bg-white px-2.5 py-[5px] text-[13px] font-medium text-[#6e6e6e]"
+                      >
+                        <Pencil className="size-[14px]" />
+                        수정
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(job)}
+                        className="rounded border border-[#ffccd4] bg-[#fff7f9] px-3 py-[5px] text-[13px] font-medium text-[#db3947]"
+                      >
+                        삭제
+                      </button>
                     </div>
                   </TableCell>
                 </TableRow>
               ))}
               {jobs.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-base text-muted-foreground">
+                  <TableCell colSpan={4} className="text-center text-base text-muted-foreground">
                     등록된 공고가 없습니다.
                   </TableCell>
                 </TableRow>
               )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+        </TableBody>
+      </Table>
     </div>
   );
 }
