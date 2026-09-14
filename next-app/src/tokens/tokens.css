@@ -1,0 +1,319 @@
+/**
+ * tokens.css — Tier 2 (Semantic) 디자인 토큰
+ *
+ * Tier 1(../base.css)을 var()로 참조해 짧고 의미 기반인 이름으로 재포장합니다.
+ * letsur-platform-ui(desktop/guide/letsur-platform-ui-main/src/tokens/tokens.css)와
+ * 동일한 네이밍 규칙을 그대로 따릅니다 — 두 코드베이스를 오가는 개발자가
+ * 다시 배울 필요가 없게 하기 위함입니다.
+ *
+ * 이 파일은 자유롭게 손으로 편집 가능합니다 (base.css와 달리 "재추출 전용" 아님).
+ * 다만 여기서 새 이름을 만들 땐 반드시 base.css의 primitive를 var()로 참조만 하고,
+ * 원시값(hex, px)을 직접 복붙하지 마세요 — Tier 1이 바뀌면 여기 전체가 따라와야 합니다.
+ */
+
+@import "./base.css";
+
+:root {
+  /* --- 브랜드 색상 (Teal) --- */
+  --color-primary: var(--color-colors-teal-500);
+  --color-primary-hover: var(--color-colors-teal-600);
+  --color-primary-foreground: var(--color-colors-base-white);
+  --color-secondary: var(--color-colors-cool-gray-100);
+  --color-secondary-foreground: var(--color-colors-neutral-gray-700);
+  --color-secondary-hover: var(--color-colors-cool-gray-200);
+
+  /* --- 포인트 컬러 (팔레트 "포인트 컬러" 섹션 확정값, 2026-08-04) --- */
+  --color-point-teal: var(--color-colors-teal-600);
+  --color-point-blue: var(--color-colors-blue-600);
+  --color-point-redpink: var(--color-colors-redpink-600);
+  /* Purple — 로고·브랜드 마크 전용, 콘텐츠엔 원칙적으로 미사용. 필요 시 참조만. */
+  --color-logo-mark: var(--color-colors-purple-500);
+
+  /* --- 상태 색상 ---
+   * Warning 대응 계열 없음(의도적 미생성, 의사결정로그 2026-08-04 참고) — 필요해지면
+   * 제품 컬러 시스템의 Warning(오렌지, 500 #F79009)을 base.css에 추가하고 여기 연결할 것.
+   */
+  --color-destructive: var(--color-colors-redpink-700);
+  --color-destructive-hover: var(--color-colors-redpink-800);
+  --color-destructive-foreground: var(--color-colors-base-white);
+  --color-success: var(--color-colors-teal-600);
+  --color-success-foreground: var(--color-colors-base-white);
+
+  /* --- 텍스트 색상 --- */
+  --color-text-primary: var(--color-colors-text-primary);
+  --color-text-secondary: var(--color-colors-text-secondary);
+  --color-text-secondary-hover: var(--color-colors-text-secondary-hover);
+  --color-text-tertiary: var(--color-colors-text-tertiary);
+  --color-text-tertiary-hover: var(--color-colors-text-tertiary-hover);
+  --color-text-quaternary: var(--color-colors-text-quaternary);
+  --color-text-disabled: var(--color-colors-text-disabled);
+  --color-text-placeholder: var(--color-colors-text-placeholder);
+  --color-text-white: var(--color-colors-text-white);
+  --color-text-link: var(--color-colors-text-link);
+  --color-text-link-hover: var(--color-colors-text-link-hover);
+  --color-text-brand-primary: var(--color-colors-text-brand-primary);
+  --color-text-brand-secondary: var(--color-colors-text-brand-secondary);
+  --color-text-brand-secondary-hover: var(--color-colors-text-brand-secondary-hover);
+  --color-text-brand-tertiary: var(--color-colors-text-brand-tertiary);
+  --color-text-error-primary: var(--color-colors-text-error-primary);
+  --color-text-error-primary-hover: var(--color-colors-text-error-primary-hover);
+  --color-text-success-primary: var(--color-colors-text-success-primary);
+
+  /* --- 배경 색상 --- */
+  --color-bg-primary: var(--color-colors-background-primary);
+  --color-bg-primary-hover: var(--color-colors-background-primary-hover);
+  --color-bg-secondary: var(--color-colors-background-secondary);
+  --color-bg-secondary-hover: var(--color-colors-background-secondary-hover);
+  --color-bg-tertiary: var(--color-colors-background-tertiary);
+  --color-bg-quaternary: var(--color-colors-background-quaternary);
+  --color-bg-disabled: var(--color-colors-background-disabled);
+  --color-bg-disabled-subtle: var(--color-colors-background-disabled-subtle);
+  --color-bg-brand: var(--color-colors-background-brand-solid);
+  --color-bg-brand-hover: var(--color-colors-background-brand-solid-hover);
+  --color-bg-brand-primary: var(--color-colors-background-brand-primary);
+  --color-bg-brand-secondary: var(--color-colors-background-brand-secondary);
+  --color-bg-brand-section: var(--color-colors-background-brand-section);
+  --color-bg-brand-section-subtle: var(--color-colors-background-brand-section-subtle);
+  --color-bg-error: var(--color-colors-background-error-primary);
+  --color-bg-error-secondary: var(--color-colors-background-error-secondary);
+  --color-bg-error-solid: var(--color-colors-background-error-solid);
+  --color-bg-error-solid-hover: var(--color-colors-background-error-solid-hover);
+  --color-bg-success: var(--color-colors-background-success-primary);
+  --color-bg-success-secondary: var(--color-colors-background-success-secondary);
+  --color-bg-success-solid: var(--color-colors-background-success-solid);
+  --color-bg-active: var(--color-colors-background-active);
+  --color-bg-primary-solid: var(--color-colors-background-primary-solid);
+  --color-bg-secondary-subtle: var(--color-colors-background-secondary-subtle);
+  --color-bg-secondary-solid: var(--color-colors-background-secondary-solid);
+  --color-bg-overlay: var(--color-colors-background-overlay);
+
+  /* --- 테두리 색상 --- */
+  --color-border: var(--color-colors-border-primary);
+  --color-border-secondary: var(--color-colors-border-secondary);
+  --color-border-secondary-alt: var(--color-colors-border-secondary-alt);
+  --color-border-tertiary: var(--color-colors-border-tertiary);
+  --color-border-disabled: var(--color-colors-border-disabled);
+  --color-border-disabled-subtle: var(--color-colors-border-disabled-subtle);
+  --color-border-brand: var(--color-colors-border-brand);
+  --color-border-brand-alt: var(--color-colors-border-brand-alt);
+  --color-border-error: var(--color-colors-border-error);
+  --color-border-error-subtle: var(--color-colors-border-error-subtle);
+
+  /* --- 포커스 링 --- */
+  --color-ring: var(--color-colors-effects-focus-ring);
+  --color-ring-hover: var(--color-colors-effects-focus-ring-alt);
+  --color-ring-error: var(--color-colors-effects-focus-ring-error);
+  --color-ring-gray: var(--color-colors-effects-focus-ring-gray);
+
+  /* --- Base / Alpha / Muted --- */
+  --color-base-black: var(--color-colors-base-black);
+  --color-base-transparent: var(--color-colors-base-transparent);
+  --color-alpha-white-10: var(--color-component-colors-alpha-white-10);
+  --color-alpha-white-20: var(--color-component-colors-alpha-white-20);
+  --color-alpha-white-30: var(--color-component-colors-alpha-white-30);
+  --color-alpha-white-40: var(--color-component-colors-alpha-white-40);
+  --color-alpha-white-50: var(--color-component-colors-alpha-white-50);
+  --color-alpha-white-60: var(--color-component-colors-alpha-white-60);
+  --color-alpha-white-70: var(--color-component-colors-alpha-white-70);
+  --color-alpha-white-80: var(--color-component-colors-alpha-white-80);
+  --color-alpha-white-90: var(--color-component-colors-alpha-white-90);
+  --color-alpha-black-10: var(--color-component-colors-alpha-black-10);
+  --color-alpha-black-20: var(--color-component-colors-alpha-black-20);
+  --color-alpha-black-30: var(--color-component-colors-alpha-black-30);
+  --color-alpha-black-40: var(--color-component-colors-alpha-black-40);
+  --color-alpha-black-50: var(--color-component-colors-alpha-black-50);
+  --color-alpha-black-60: var(--color-component-colors-alpha-black-60);
+  --color-alpha-black-70: var(--color-component-colors-alpha-black-70);
+  --color-alpha-black-80: var(--color-component-colors-alpha-black-80);
+  --color-alpha-black-90: var(--color-component-colors-alpha-black-90);
+  --color-muted: var(--color-colors-cool-gray-100);
+  --color-muted-foreground: var(--color-colors-neutral-gray-500);
+
+  /* --- Foreground (아이콘/비텍스트용) --- */
+  --color-fg-primary: var(--color-colors-foreground-primary);
+  --color-fg-secondary: var(--color-colors-foreground-secondary);
+  --color-fg-secondary-hover: var(--color-colors-foreground-secondary-hover);
+  --color-fg-tertiary: var(--color-colors-foreground-tertiary);
+  --color-fg-tertiary-hover: var(--color-colors-foreground-tertiary-hover);
+  --color-fg-quaternary: var(--color-colors-foreground-quaternary);
+  --color-fg-quaternary-hover: var(--color-colors-foreground-quaternary-hover);
+  --color-fg-white: var(--color-colors-foreground-white);
+  --color-fg-disabled: var(--color-colors-foreground-disabled);
+  --color-fg-disabled-subtle: var(--color-colors-foreground-disabled-subtle);
+  --color-fg-brand-primary: var(--color-colors-foreground-brand-primary);
+  --color-fg-brand-secondary: var(--color-colors-foreground-brand-secondary);
+  --color-fg-brand-secondary-hover: var(--color-colors-foreground-brand-secondary-hover);
+  --color-fg-error-primary: var(--color-colors-foreground-error-primary);
+  --color-fg-error-secondary: var(--color-colors-foreground-error-secondary);
+  --color-fg-success-primary: var(--color-colors-foreground-success-primary);
+  --color-fg-success-secondary: var(--color-colors-foreground-success-secondary);
+  --color-fg-link: var(--color-colors-foreground-link);
+  --color-fg-link-hover: var(--color-colors-foreground-link-hover);
+  --color-fg-required: var(--color-colors-foreground-required);
+
+  /* --- Shadow --- */
+  --shadow-color-xs: var(--color-colors-effects-shadow-xs);
+  --shadow-color-sm-01: var(--color-colors-effects-shadow-sm-01);
+  --shadow-color-sm-02: var(--color-colors-effects-shadow-sm-02);
+  --shadow-color-md-01: var(--color-colors-effects-shadow-md-01);
+  --shadow-color-md-02: var(--color-colors-effects-shadow-md-02);
+  --shadow-color-lg-01: var(--color-colors-effects-shadow-lg-01);
+  --shadow-color-lg-02: var(--color-colors-effects-shadow-lg-02);
+  --shadow-color-lg-03: var(--color-colors-effects-shadow-lg-03);
+  --shadow-color-xl-01: var(--color-colors-effects-shadow-xl-01);
+  --shadow-color-xl-02: var(--color-colors-effects-shadow-xl-02);
+  --shadow-color-xl-03: var(--color-colors-effects-shadow-xl-03);
+  --shadow-color-2xl-01: var(--color-colors-effects-shadow-2xl-01);
+  --shadow-color-2xl-02: var(--color-colors-effects-shadow-2xl-02);
+  --shadow-color-3xl-01: var(--color-colors-effects-shadow-3xl-01);
+  --shadow-color-3xl-02: var(--color-colors-effects-shadow-3xl-02);
+
+  --shadow-xs:  0px 1px 2px 0px var(--shadow-color-xs);
+  --shadow-sm:  0px 1px 3px 0px var(--shadow-color-sm-01), 0px 1px 2px -1px var(--shadow-color-sm-02);
+  --shadow-md:  0px 4px 6px -1px var(--shadow-color-md-01), 0px 2px 4px -2px var(--shadow-color-md-02);
+  --shadow-lg:  0px 12px 16px -4px var(--shadow-color-lg-01), 0px 4px 6px -2px var(--shadow-color-lg-02), 0px 2px 2px -1px var(--shadow-color-lg-03);
+  --shadow-xl:  0px 20px 24px -4px var(--shadow-color-xl-01), 0px 8px 8px -4px var(--shadow-color-xl-02), 0px 3px 3px -1.5px var(--shadow-color-xl-03);
+  --shadow-2xl: 0px 24px 48px -12px var(--shadow-color-2xl-01), 0px 4px 4px -2px var(--shadow-color-2xl-02);
+  --shadow-3xl: 0px 32px 64px -12px var(--shadow-color-3xl-01), 0px 5px 5px -2.5px var(--shadow-color-3xl-02);
+
+  /* --- 간격 (Spacing) --- */
+  --spacing-none: var(--dimension-spacing-none);
+  --spacing-xxs: var(--dimension-spacing-xxs);
+  --spacing-xs: var(--dimension-spacing-xs);
+  --spacing-sm: var(--dimension-spacing-sm);
+  --spacing-md: var(--dimension-spacing-md);
+  --spacing-md-lg: var(--dimension-spacing-md-lg);
+  --spacing-lg: var(--dimension-spacing-lg);
+  --spacing-xl: var(--dimension-spacing-xl);
+  --spacing-2xl: var(--dimension-spacing-2xl);
+  --spacing-3xl: var(--dimension-spacing-3xl);
+  --spacing-4xl: var(--dimension-spacing-4xl);
+  --spacing-5xl: var(--dimension-spacing-5xl);
+  --spacing-6xl: var(--dimension-spacing-6xl);
+  --spacing-7xl: var(--dimension-spacing-7xl);
+  --spacing-8xl: var(--dimension-spacing-8xl);
+  --spacing-9xl: var(--dimension-spacing-9xl);
+  --spacing-10xl: var(--dimension-spacing-10xl);
+  --spacing-11xl: var(--dimension-spacing-11xl);
+
+  /* --- 모서리 반경 (Radius) --- */
+  --radius-none: var(--dimension-radius-none);
+  --radius-xxs: var(--dimension-radius-xxs);
+  --radius-xs: var(--dimension-radius-xs);
+  --radius-sm: var(--dimension-radius-sm);
+  --radius-md: var(--dimension-radius-md);
+  --radius-lg: var(--dimension-radius-lg);
+  --radius-xl: var(--dimension-radius-xl);
+  --radius-2xl: var(--dimension-radius-2xl);
+  --radius-3xl: var(--dimension-radius-3xl);
+  --radius-4xl: var(--dimension-radius-4xl);
+  --radius-full: var(--dimension-radius-full);
+
+  /* --- 아이콘 사이즈 --- */
+  --icon-size-xs: 12px;
+  --icon-size-sm: 16px;
+  --icon-size-md: 20px;
+  --icon-size-lg: 24px;
+  --icon-size-xl: 32px;
+  --icon-size-2xl: 40px;
+
+  /* --- Utility 색상 (Badge/Tag 등)
+   * Warning(yellow) 대응 계열 없음 — 의도적 미생성이라 utility-yellow-* 토큰 자체를 만들지 않음.
+   */
+  --color-utility-teal-50: var(--color-component-colors-utility-brand-50);
+  --color-utility-teal-100: var(--color-component-colors-utility-brand-100);
+  --color-utility-teal-200: var(--color-component-colors-utility-brand-200);
+  --color-utility-teal-300: var(--color-component-colors-utility-brand-300);
+  --color-utility-teal-400: var(--color-component-colors-utility-brand-400);
+  --color-utility-teal-500: var(--color-component-colors-utility-brand-500);
+  --color-utility-teal-600: var(--color-component-colors-utility-brand-600);
+  --color-utility-teal-700: var(--color-component-colors-utility-brand-700);
+  --color-utility-teal-800: var(--color-component-colors-utility-brand-800);
+  --color-utility-teal-900: var(--color-component-colors-utility-brand-900);
+  --color-utility-neutral-gray-50: var(--color-colors-neutral-gray-50);
+  --color-utility-neutral-gray-100: var(--color-colors-neutral-gray-100);
+  --color-utility-neutral-gray-200: var(--color-colors-neutral-gray-200);
+  --color-utility-neutral-gray-300: var(--color-colors-neutral-gray-300);
+  --color-utility-neutral-gray-400: var(--color-colors-neutral-gray-400);
+  --color-utility-neutral-gray-500: var(--color-colors-neutral-gray-500);
+  --color-utility-neutral-gray-600: var(--color-colors-neutral-gray-600);
+  --color-utility-neutral-gray-700: var(--color-colors-neutral-gray-700);
+  --color-utility-neutral-gray-800: var(--color-colors-neutral-gray-800);
+  --color-utility-neutral-gray-900: var(--color-colors-neutral-gray-900);
+  --color-utility-cool-gray-50: var(--color-component-colors-utility-gray-50);
+  --color-utility-cool-gray-100: var(--color-component-colors-utility-gray-100);
+  --color-utility-cool-gray-200: var(--color-component-colors-utility-gray-200);
+  --color-utility-cool-gray-300: var(--color-component-colors-utility-gray-300);
+  --color-utility-cool-gray-400: var(--color-component-colors-utility-gray-400);
+  --color-utility-cool-gray-500: var(--color-component-colors-utility-gray-500);
+  --color-utility-cool-gray-600: var(--color-component-colors-utility-gray-600);
+  --color-utility-cool-gray-700: var(--color-component-colors-utility-gray-700);
+  --color-utility-cool-gray-800: var(--color-component-colors-utility-gray-800);
+  --color-utility-cool-gray-900: var(--color-component-colors-utility-gray-900);
+  --color-utility-redpink-50: var(--color-component-colors-utility-red-50);
+  --color-utility-redpink-100: var(--color-component-colors-utility-red-100);
+  --color-utility-redpink-200: var(--color-component-colors-utility-red-200);
+  --color-utility-redpink-300: var(--color-component-colors-utility-red-300);
+  --color-utility-redpink-400: var(--color-component-colors-utility-red-400);
+  --color-utility-redpink-500: var(--color-component-colors-utility-red-500);
+  --color-utility-redpink-600: var(--color-component-colors-utility-red-600);
+  --color-utility-redpink-700: var(--color-component-colors-utility-red-700);
+  --color-utility-redpink-800: var(--color-component-colors-utility-red-800);
+  --color-utility-redpink-900: var(--color-component-colors-utility-red-900);
+  --color-utility-blue-50: var(--color-component-colors-utility-blue-50);
+  --color-utility-blue-100: var(--color-component-colors-utility-blue-100);
+  --color-utility-blue-200: var(--color-component-colors-utility-blue-200);
+  --color-utility-blue-300: var(--color-component-colors-utility-blue-300);
+  --color-utility-blue-400: var(--color-component-colors-utility-blue-400);
+  --color-utility-blue-500: var(--color-component-colors-utility-blue-500);
+  --color-utility-blue-600: var(--color-component-colors-utility-blue-600);
+  --color-utility-blue-700: var(--color-component-colors-utility-blue-700);
+  --color-utility-blue-800: var(--color-component-colors-utility-blue-800);
+  --color-utility-blue-900: var(--color-component-colors-utility-blue-900);
+  --color-utility-purple-50: var(--color-component-colors-utility-purple-50);
+  --color-utility-purple-100: var(--color-component-colors-utility-purple-100);
+  --color-utility-purple-200: var(--color-component-colors-utility-purple-200);
+  --color-utility-purple-300: var(--color-component-colors-utility-purple-300);
+  --color-utility-purple-400: var(--color-component-colors-utility-purple-400);
+  --color-utility-purple-500: var(--color-component-colors-utility-purple-500);
+  --color-utility-purple-600: var(--color-component-colors-utility-purple-600);
+  --color-utility-purple-700: var(--color-component-colors-utility-purple-700);
+  --color-utility-purple-800: var(--color-component-colors-utility-purple-800);
+  --color-utility-purple-900: var(--color-component-colors-utility-purple-900);
+
+  /* --- 타이포그래피 --- */
+  --font-family-base: var(--string-font-family-font-family-body);
+  --font-family-display: var(--string-font-family-font-family-display);
+
+  --font-size-caption-100: var(--dimension-font-size-caption-100);
+  --font-size-caption-200: var(--dimension-font-size-caption-200);
+  --font-size-paragraph-100: var(--dimension-font-size-paragraph-100);
+  --font-size-paragraph-200: var(--dimension-font-size-paragraph-200);
+  --font-size-title-100: var(--dimension-font-size-title-100);
+  --font-size-title-200: var(--dimension-font-size-title-200);
+  --font-size-title-250: var(--dimension-font-size-title-250);
+  --font-size-title-300: var(--dimension-font-size-title-300);
+  --font-size-heading-100: var(--dimension-font-size-heading-100);
+  --font-size-heading-200: var(--dimension-font-size-heading-200);
+  --font-size-heading-300: var(--dimension-font-size-heading-300);
+  --font-size-heading-400: var(--dimension-font-size-heading-400);
+  --font-size-heading-500: var(--dimension-font-size-heading-500);
+  --font-size-heading-600: var(--dimension-font-size-heading-600);
+  --font-size-heading-700: var(--dimension-font-size-heading-700);
+
+  --line-height-caption-100: var(--dimension-line-height-caption-100);
+  --line-height-caption-200: var(--dimension-line-height-caption-200);
+  --line-height-paragraph-100: var(--dimension-line-height-paragraph-100);
+  --line-height-paragraph-200: var(--dimension-line-height-paragraph-200);
+  --line-height-title-100: var(--dimension-line-height-title-100);
+  --line-height-title-200: var(--dimension-line-height-title-200);
+  --line-height-title-250: var(--dimension-line-height-title-250);
+  --line-height-title-300: var(--dimension-line-height-title-300);
+  --line-height-heading-100: var(--dimension-line-height-heading-100);
+  --line-height-heading-200: var(--dimension-line-height-heading-200);
+  --line-height-heading-300: var(--dimension-line-height-heading-300);
+  --line-height-heading-400: var(--dimension-line-height-heading-400);
+  --line-height-heading-500: var(--dimension-line-height-heading-500);
+  --line-height-heading-600: var(--dimension-line-height-heading-600);
+  --line-height-heading-700: var(--dimension-line-height-heading-700);
+}

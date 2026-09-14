@@ -1,0 +1,327 @@
+/**
+ * globals.css — Tailwind CSS v4 전역 스타일 진입점
+ *
+ * letsur-platform-ui의 src/styles/globals.css와 동일한 역할/구조입니다:
+ *   1. Tailwind 기본 스타일 (@import "tailwindcss")
+ *   2. Semantic 토큰 불러오기 (@import "../tokens/tokens.css")
+ *   3. @theme inline 으로 토큰을 Tailwind 유틸리티 클래스에 매핑
+ *
+ * [사용 예시]
+ * - 색상: className="bg-primary text-primary-foreground"
+ * - 간격: className="p-md gap-lg"
+ * - 반경: className="rounded-md"
+ * - 타이포: className="text-heading-500 font-sans"
+ *
+ * @theme 이 아니라 반드시 @theme inline 을 써야 함 — inline이 없으면 Tailwind가
+ * 빌드타임에 var() 참조를 정적 값으로 풀어버려서, 나중에 tokens.css/base.css 값을
+ * 바꿔도(피그마 재동기화 등) 반영되지 않음.
+ */
+
+@import "pretendard/dist/web/variable/pretendardvariable.css";
+@import "tailwindcss";
+@import "../tokens/tokens.css";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+/*---break---
+ */
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* 색상 */
+  --color-primary: var(--color-primary);
+  --color-primary-hover: var(--color-primary-hover);
+  --color-primary-foreground: var(--color-primary-foreground);
+  --color-secondary: var(--color-secondary);
+  --color-secondary-foreground: var(--color-secondary-foreground);
+  --color-secondary-hover: var(--color-secondary-hover);
+
+  --color-destructive: var(--color-destructive);
+  --color-destructive-hover: var(--color-destructive-hover);
+  --color-destructive-foreground: var(--color-destructive-foreground);
+  --color-success: var(--color-success);
+  --color-success-foreground: var(--color-success-foreground);
+
+  --color-muted: var(--color-muted);
+  --color-muted-foreground: var(--color-muted-foreground);
+
+  --color-border: var(--color-border);
+  --color-border-secondary: var(--color-border-secondary);
+  --color-border-disabled: var(--color-border-disabled);
+  --color-border-brand: var(--color-border-brand);
+  --color-border-error: var(--color-border-error);
+
+  --color-ring: var(--color-ring);
+  --color-ring-hover: var(--color-ring-hover);
+  --color-ring-error: var(--color-ring-error);
+  --color-ring-gray: var(--color-ring-gray);
+
+  --color-bg-primary: var(--color-bg-primary);
+  --color-bg-primary-hover: var(--color-bg-primary-hover);
+  --color-bg-secondary: var(--color-bg-secondary);
+  --color-bg-secondary-hover: var(--color-bg-secondary-hover);
+  --color-bg-tertiary: var(--color-bg-tertiary);
+  --color-bg-quaternary: var(--color-bg-quaternary);
+  --color-bg-disabled: var(--color-bg-disabled);
+  --color-bg-brand: var(--color-bg-brand);
+  --color-bg-brand-hover: var(--color-bg-brand-hover);
+  --color-bg-brand-primary: var(--color-bg-brand-primary);
+  --color-bg-brand-secondary: var(--color-bg-brand-secondary);
+  --color-bg-brand-section: var(--color-bg-brand-section);
+  --color-bg-error: var(--color-bg-error);
+  --color-bg-success: var(--color-bg-success);
+  --color-bg-overlay: var(--color-bg-overlay);
+
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-tertiary: var(--color-text-tertiary);
+  --color-text-quaternary: var(--color-text-quaternary);
+  --color-text-disabled: var(--color-text-disabled);
+  --color-text-placeholder: var(--color-text-placeholder);
+  --color-text-white: var(--color-text-white);
+  --color-text-link: var(--color-text-link);
+  --color-text-link-hover: var(--color-text-link-hover);
+  --color-text-brand-primary: var(--color-text-brand-primary);
+  --color-text-brand-secondary: var(--color-text-brand-secondary);
+  --color-text-error-primary: var(--color-text-error-primary);
+  --color-text-success-primary: var(--color-text-success-primary);
+
+  --color-fg-primary: var(--color-fg-primary);
+  --color-fg-secondary: var(--color-fg-secondary);
+  --color-fg-tertiary: var(--color-fg-tertiary);
+  --color-fg-white: var(--color-fg-white);
+  --color-fg-brand-primary: var(--color-fg-brand-primary);
+  --color-fg-brand-secondary: var(--color-fg-brand-secondary);
+
+  /* Utility 색상 (teal/neutral-gray/cool-gray/blue/redpink/purple 50~900)
+   * yellow 없음 — Warning 계열 미생성(의사결정로그 참고) */
+  --color-utility-teal-50: var(--color-utility-teal-50);
+  --color-utility-teal-500: var(--color-utility-teal-500);
+  --color-utility-teal-700: var(--color-utility-teal-700);
+  --color-utility-neutral-gray-100: var(--color-utility-neutral-gray-100);
+  --color-utility-neutral-gray-700: var(--color-utility-neutral-gray-700);
+  --color-utility-cool-gray-100: var(--color-utility-cool-gray-100);
+  --color-utility-cool-gray-700: var(--color-utility-cool-gray-700);
+  --color-utility-blue-500: var(--color-utility-blue-500);
+  --color-utility-redpink-500: var(--color-utility-redpink-500);
+  --color-utility-purple-500: var(--color-utility-purple-500);
+
+  /* 폰트 패밀리 */
+  --font-sans: var(--font-sans);
+
+  /* 폰트 크기 — 렛서 홈페이지 자체 스케일(Caption/Paragraph/Title/Heading) */
+  --text-caption-100: var(--font-size-caption-100);
+  --text-caption-200: var(--font-size-caption-200);
+  --text-paragraph-100: var(--font-size-paragraph-100);
+  --text-paragraph-200: var(--font-size-paragraph-200);
+  --text-title-100: var(--font-size-title-100);
+  --text-title-200: var(--font-size-title-200);
+  --text-title-250: var(--font-size-title-250);
+  --text-title-300: var(--font-size-title-300);
+  --text-heading-100: var(--font-size-heading-100);
+  --text-heading-200: var(--font-size-heading-200);
+  --text-heading-300: var(--font-size-heading-300);
+  --text-heading-400: var(--font-size-heading-400);
+  --text-heading-500: var(--font-size-heading-500);
+  --text-heading-600: var(--font-size-heading-600);
+  --text-heading-700: var(--font-size-heading-700);
+
+  /* 줄 높이 */
+  --leading-caption-100: var(--line-height-caption-100);
+  --leading-caption-200: var(--line-height-caption-200);
+  --leading-paragraph-100: var(--line-height-paragraph-100);
+  --leading-paragraph-200: var(--line-height-paragraph-200);
+  --leading-title-100: var(--line-height-title-100);
+  --leading-title-200: var(--line-height-title-200);
+  --leading-title-250: var(--line-height-title-250);
+  --leading-title-300: var(--line-height-title-300);
+  --leading-heading-100: var(--line-height-heading-100);
+  --leading-heading-200: var(--line-height-heading-200);
+  --leading-heading-300: var(--line-height-heading-300);
+  --leading-heading-400: var(--line-height-heading-400);
+  --leading-heading-500: var(--line-height-heading-500);
+  --leading-heading-600: var(--line-height-heading-600);
+  --leading-heading-700: var(--line-height-heading-700);
+
+  /* 간격 */
+  --spacing-none: var(--spacing-none);
+  --spacing-xxs: var(--spacing-xxs);
+  --spacing-xs: var(--spacing-xs);
+  --spacing-sm: var(--spacing-sm);
+  --spacing-md: var(--spacing-md);
+  --spacing-lg: var(--spacing-lg);
+  --spacing-xl: var(--spacing-xl);
+  --spacing-2xl: var(--spacing-2xl);
+  --spacing-3xl: var(--spacing-3xl);
+  --spacing-4xl: var(--spacing-4xl);
+  --spacing-5xl: var(--spacing-5xl);
+  --spacing-6xl: var(--spacing-6xl);
+  --spacing-7xl: var(--spacing-7xl);
+  --spacing-8xl: var(--spacing-8xl);
+  --spacing-9xl: var(--spacing-9xl);
+  --spacing-10xl: var(--spacing-10xl);
+
+  /* 그림자 */
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
+  --shadow-3xl: var(--shadow-3xl);
+
+  /* 모서리 반경 */
+  --radius-none: var(--radius-none);
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+  --radius-3xl: var(--radius-3xl);
+  --radius-full: var(--radius-full);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-input: var(--input);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+    box-sizing: border-box;
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-family-base), system-ui, sans-serif;
+    word-break: keep-all;
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+@layer utilities {
+  /* Tailwind이 hover: + text-[color:var(...)] 조합의 CSS를 생성하지 못하는 경우가 있어
+     (border/bg의 동일 패턴은 정상 생성됨 — 원인 불명의 엔진 한계), 순수 CSS로 우회.
+     @layer utilities에 둬야 text-fg-white 등 다른 유틸리티 레이어보다 우선순위가 밀리지 않음. */
+  .cta-outline-button:hover {
+    color: var(--color-colors-teal-500);
+  }
+
+  /* 가로 스크롤은 유지하되 스크롤바만 숨김(모바일 탭 리스트 등). 스와이프/클릭 동작에는 영향 없음. */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 탭/아코디언 전환 시 이미지가 바뀌는 요소에 key를 바꿔 리마운트시키면 매번 재생됨(AI Gateway 솔루션 탭 등) */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  .animate-fade-in {
+    animation: fade-in 0.9s ease-out;
+  }
+}
+/*---break---
+ */
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+/*---break---
+ */
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}

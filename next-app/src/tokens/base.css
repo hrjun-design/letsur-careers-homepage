@@ -1,0 +1,438 @@
+/**
+ * base.css — Tier 1 (Primitive) 디자인 토큰
+ *
+ * 2026-08-04: 컬러·타이포그래피 프리미티브를 letsur-platform-ui 시드값에서
+ * 렛서 홈페이지 자체 피그마 값("렛서 홈페이지 3.0 디자인 마스터" 파일)으로 교체함.
+ * 근거는 `context/의사결정로그.md` 2026-08-04 항목들 참고.
+ *
+ * 컬러 계열명은 letsur-platform-ui의 범용명(gray/red/green)이 아니라 렛서 홈페이지
+ * 피그마 파일에서 실제로 쓰는 이름(Teal/Blue/Purple/Redpink/Neutral Gray/Cool Gray)을
+ * 그대로 썼음 — 코드와 피그마 레이어명이 어긋나면 대조할 때 혼동이 생기기 쉬워서
+ * (이번 세션에서 실제로 겪은 문제), 여기서는 letsur-platform-ui와의 네이밍 일치보다
+ * 피그마 원본과의 1:1 대응을 우선함. Tier 2(tokens.css)의 시맨틱 네이밍 패턴
+ * (--color-text-primary 등)은 letsur-platform-ui와 계속 동일하게 유지.
+ *
+ * Warning(경고) 계열은 만들지 않음 — 렛서 홈페이지에 경고 상태가 필요한 화면이
+ * 없다고 판단(의사결정로그 2026-08-04 참고). 나중에 필요해지면 제품 컬러 시스템의
+ * Warning(오렌지, 500 `#F79009`)을 가져오면 됨.
+ *
+ * 갱신 방법: 렛서 홈페이지 피그마 파일의 Variables를 Claude가 읽어서 이 파일과
+ * 비교(diff)한다. 값이 같으면 유지 / 마케팅 전용 확장이면 새 스텝 추가 / 드리프트로
+ * 보이면 확인 후 반영. → 이 파일은 직접 하드코딩 편집 금지, 피그마에서 재추출해서 갱신.
+ */
+
+:root {
+  /* ============================================================
+   * Color — Primitive palette (렛서 홈페이지 피그마 확정값, 2026-08-04)
+   * ============================================================ */
+  --color-colors-base-white: #ffffff;
+  --color-colors-base-black: #000000;
+  --color-colors-base-transparent: #ffffff00;
+
+  /* Neutral Gray — 텍스트 전용 */
+  --color-colors-neutral-gray-50: #f9f9f9;
+  --color-colors-neutral-gray-100: #f5f5f5;
+  --color-colors-neutral-gray-150: #eeeeee;
+  --color-colors-neutral-gray-200: #e1e1e1;
+  --color-colors-neutral-gray-300: #d3d3d3;
+  --color-colors-neutral-gray-400: #bfbfbf;
+  --color-colors-neutral-gray-450: #afafaf;
+  --color-colors-neutral-gray-500: #9e9e9e;
+  --color-colors-neutral-gray-600: #888888;
+  --color-colors-neutral-gray-650: #6e6e6e;
+  --color-colors-neutral-gray-700: #555555;
+  --color-colors-neutral-gray-800: #333333;
+  --color-colors-neutral-gray-850: #222222;
+  --color-colors-neutral-gray-900: #111111;
+
+  /* Cool Gray — 배경·구획·구조 전용 */
+  --color-colors-cool-gray-50: #fafafb;
+  --color-colors-cool-gray-100: #f5f6f7;
+  --color-colors-cool-gray-150: #eeeff0;
+  --color-colors-cool-gray-200: #e4e5e7;
+  --color-colors-cool-gray-300: #d9d8de;
+  --color-colors-cool-gray-400: #c5c6cc;
+  --color-colors-cool-gray-450: #b4b6bd;
+  --color-colors-cool-gray-500: #9d9fa7;
+  --color-colors-cool-gray-600: #868993;
+  --color-colors-cool-gray-650: #73757c;
+  --color-colors-cool-gray-700: #4a4c53;
+  --color-colors-cool-gray-800: #2e2f33;
+  --color-colors-cool-gray-850: #222222;
+  --color-colors-cool-gray-900: #111111;
+
+  /* Teal — 브랜드 기준 컬러. CTA·강조 요소 등 콘텐츠 전반에 폭넓게 사용 */
+  --color-colors-teal-50: #e7faec;
+  --color-colors-teal-100: #c3f5de;
+  --color-colors-teal-200: #87ebbe;
+  --color-colors-teal-300: #5fe4ab;
+  --color-colors-teal-400: #37dd92;
+  --color-colors-teal-500: #00c781;
+  --color-colors-teal-550: #02bc84;
+  --color-colors-teal-600: #00ab7f;
+  --color-colors-teal-700: #029676;
+  --color-colors-teal-800: #087a68;
+  --color-colors-teal-900: #066257;
+
+  /* Blue — 콘텐츠 전반의 강조·링크·CTA 컬러 */
+  --color-colors-blue-50: #e3efff;
+  --color-colors-blue-100: #cbe2ff;
+  --color-colors-blue-200: #8fc0ff;
+  --color-colors-blue-300: #549fff;
+  --color-colors-blue-400: #2d89ff;
+  --color-colors-blue-500: #0070ff;
+  --color-colors-blue-600: #0262dd;
+  --color-colors-blue-700: #074cba;
+  --color-colors-blue-800: #013d9c;
+  --color-colors-blue-900: #003083;
+
+  /* Purple — 로고·브랜드 마크 전용. 콘텐츠 UI엔 원칙적으로 사용 안 함 */
+  --color-colors-purple-50: #f0e7f9;
+  --color-colors-purple-100: #ead5fd;
+  --color-colors-purple-200: #d4acfc;
+  --color-colors-purple-300: #bf8bff;
+  --color-colors-purple-400: #a261ff;
+  --color-colors-purple-500: #8343eb;
+  --color-colors-purple-600: #6b41c5;
+  --color-colors-purple-700: #5536ab;
+  --color-colors-purple-800: #462697;
+  --color-colors-purple-900: #3c207c;
+
+  /* Redpink — 부정·오류 상태 전용. 다른 색으로 대체 금지 */
+  --color-colors-redpink-50: #ffe7ed;
+  --color-colors-redpink-100: #ffccd4;
+  --color-colors-redpink-200: #ffa5b0;
+  --color-colors-redpink-300: #ff8390;
+  --color-colors-redpink-400: #fe6574;
+  --color-colors-redpink-500: #f54551;
+  --color-colors-redpink-600: #db3947;
+  --color-colors-redpink-700: #b72740;
+  --color-colors-redpink-800: #931939;
+  --color-colors-redpink-900: #7a0f34;
+
+  --color-colors-border-secondary-alt: #00000014;
+
+  --color-component-colors-alpha-white-10: #ffffff1a;
+  --color-component-colors-alpha-white-20: #ffffff33;
+  --color-component-colors-alpha-white-30: #ffffff4d;
+  --color-component-colors-alpha-white-40: #ffffff66;
+  --color-component-colors-alpha-white-50: #ffffff80;
+  --color-component-colors-alpha-white-60: #ffffff99;
+  --color-component-colors-alpha-white-70: #ffffffb2;
+  --color-component-colors-alpha-white-80: #ffffffcc;
+  --color-component-colors-alpha-white-90: #ffffffe5;
+  --color-component-colors-alpha-black-10: #0000001a;
+  --color-component-colors-alpha-black-20: #00000033;
+  --color-component-colors-alpha-black-30: #0000004d;
+  --color-component-colors-alpha-black-40: #00000066;
+  --color-component-colors-alpha-black-50: #00000080;
+  --color-component-colors-alpha-black-60: #00000099;
+  --color-component-colors-alpha-black-70: #000000b2;
+  --color-component-colors-alpha-black-80: #000000cc;
+  --color-component-colors-alpha-black-90: #000000e5;
+  --color-component-colors-alpha-black-100: #000000;
+
+  --color-colors-effects-shadow-xs: #0a0d120d;
+  --color-colors-effects-shadow-sm-01: #0a0d121a;
+  --color-colors-effects-shadow-sm-02: #0a0d121a;
+  --color-colors-effects-shadow-md-01: #0a0d121a;
+  --color-colors-effects-shadow-md-02: #0a0d120f;
+  --color-colors-effects-shadow-lg-01: #0a0d1214;
+  --color-colors-effects-shadow-lg-02: #0a0d1208;
+  --color-colors-effects-shadow-lg-03: #0a0d120a;
+  --color-colors-effects-shadow-xl-01: #0a0d1214;
+  --color-colors-effects-shadow-xl-02: #0a0d1208;
+  --color-colors-effects-shadow-xl-03: #0a0d120a;
+  --color-colors-effects-shadow-2xl-01: #0a0d122e;
+  --color-colors-effects-shadow-2xl-02: #0a0d120a;
+  --color-colors-effects-shadow-3xl-01: #0a0d1224;
+  --color-colors-effects-shadow-3xl-02: #0a0d120a;
+  --color-colors-effects-shadow-skeumorphic-inner: #0a0d120d;
+  --color-colors-effects-shadow-skeumorphic-inner-border: #0a0d122e;
+
+  /* Figma-level semantic (Supernova가 함께 출력하는 별칭 — Tier 1의 일부)
+   *
+   * 2026-08-04 — 그레이를 역할별로 Neutral Gray(텍스트·아이콘)/Cool Gray(배경·테두리·구조)로
+   * 분리함(에이블 캠퍼스 QA 방식 참고, 의사결정로그 참고). 두 스케일은 값 자체가 다른
+   * 별개 팔레트라 옛 gray의 정확한 hex와 1:1 대응은 안 되고, "밝기 위계가 비슷한 스텝"으로
+   * 근사 매핑했음 — 실제 화면에서 눈으로 재확인 필요.
+   * Success는 Teal(브랜드)과 동일 컬러를 겸용(제품 컬러 시스템과 동일 관행).
+   * Warning은 대응 계열 없음(의도적 미생성) — 관련 토큰 제거.
+   */
+  --color-colors-text-primary: var(--color-colors-neutral-gray-850);
+  --color-colors-text-secondary: var(--color-colors-neutral-gray-700);
+  --color-colors-text-secondary-hover: var(--color-colors-neutral-gray-800);
+  --color-colors-text-tertiary: var(--color-colors-neutral-gray-650);
+  --color-colors-text-tertiary-hover: var(--color-colors-neutral-gray-700);
+  --color-colors-text-quaternary: var(--color-colors-neutral-gray-600);
+  --color-colors-text-white: var(--color-colors-base-white);
+  --color-colors-text-disabled: var(--color-colors-neutral-gray-600);
+  --color-colors-text-placeholder: var(--color-colors-neutral-gray-400);
+  --color-colors-text-brand-primary: var(--color-colors-teal-900);
+  --color-colors-text-brand-secondary: var(--color-colors-teal-700);
+  --color-colors-text-brand-secondary-hover: var(--color-colors-teal-800);
+  --color-colors-text-brand-tertiary: var(--color-colors-teal-600);
+  --color-colors-text-error-primary: var(--color-colors-redpink-700);
+  --color-colors-text-error-primary-hover: var(--color-colors-redpink-800);
+  --color-colors-text-success-primary: var(--color-colors-teal-800);
+  --color-colors-text-link: var(--color-colors-blue-600);
+  --color-colors-text-link-hover: var(--color-colors-blue-700);
+
+  --color-colors-border-primary: var(--color-colors-cool-gray-300);
+  --color-colors-border-secondary: var(--color-colors-cool-gray-200);
+  --color-colors-border-tertiary: var(--color-colors-cool-gray-150);
+  --color-colors-border-disabled: var(--color-colors-cool-gray-300);
+  --color-colors-border-disabled-subtle: var(--color-colors-cool-gray-200);
+  --color-colors-border-brand: var(--color-colors-teal-500);
+  --color-colors-border-brand-alt: var(--color-colors-teal-600);
+  --color-colors-border-error: var(--color-colors-redpink-500);
+  --color-colors-border-error-subtle: var(--color-colors-redpink-300);
+
+  --color-colors-foreground-primary: var(--color-colors-neutral-gray-850);
+  --color-colors-foreground-secondary: var(--color-colors-neutral-gray-700);
+  --color-colors-foreground-secondary-hover: var(--color-colors-neutral-gray-800);
+  --color-colors-foreground-tertiary: var(--color-colors-neutral-gray-650);
+  --color-colors-foreground-tertiary-hover: var(--color-colors-neutral-gray-700);
+  --color-colors-foreground-quaternary: var(--color-colors-neutral-gray-400);
+  --color-colors-foreground-quaternary-hover: var(--color-colors-neutral-gray-500);
+  --color-colors-foreground-white: var(--color-colors-base-white);
+  --color-colors-foreground-disabled: var(--color-colors-neutral-gray-400);
+  --color-colors-foreground-disabled-subtle: var(--color-colors-neutral-gray-300);
+  --color-colors-foreground-brand-primary: var(--color-colors-teal-500);
+  --color-colors-foreground-brand-secondary: var(--color-colors-teal-400);
+  --color-colors-foreground-brand-secondary-hover: var(--color-colors-teal-600);
+  --color-colors-foreground-error-primary: var(--color-colors-redpink-600);
+  --color-colors-foreground-error-secondary: var(--color-colors-redpink-500);
+  --color-colors-foreground-success-primary: var(--color-colors-teal-600);
+  --color-colors-foreground-success-secondary: var(--color-colors-teal-500);
+  --color-colors-foreground-link: var(--color-colors-blue-600);
+  --color-colors-foreground-link-hover: var(--color-colors-blue-700);
+  --color-colors-foreground-required: var(--color-colors-redpink-700);
+
+  --color-colors-background-primary: var(--color-colors-base-white);
+  --color-colors-background-primary-hover: var(--color-colors-cool-gray-50);
+  --color-colors-background-primary-solid: var(--color-colors-cool-gray-900);
+  --color-colors-background-secondary: var(--color-colors-cool-gray-50);
+  --color-colors-background-secondary-hover: var(--color-colors-cool-gray-100);
+  --color-colors-background-secondary-subtle: var(--color-colors-cool-gray-50);
+  --color-colors-background-secondary-solid: var(--color-colors-cool-gray-600);
+  --color-colors-background-tertiary: var(--color-colors-cool-gray-100);
+  --color-colors-background-quaternary: var(--color-colors-cool-gray-200);
+  --color-colors-background-active: var(--color-colors-cool-gray-50);
+  --color-colors-background-disabled: var(--color-colors-cool-gray-100);
+  --color-colors-background-disabled-subtle: var(--color-colors-cool-gray-50);
+  --color-colors-background-overlay: var(--color-colors-base-black);
+  --color-colors-background-brand-primary: var(--color-colors-teal-50);
+  --color-colors-background-brand-secondary: var(--color-colors-teal-100);
+  --color-colors-background-brand-solid: var(--color-colors-teal-500);
+  --color-colors-background-brand-solid-hover: var(--color-colors-teal-600);
+  --color-colors-background-brand-section: var(--color-colors-teal-700);
+  --color-colors-background-brand-section-subtle: var(--color-colors-teal-600);
+  --color-colors-background-error-primary: var(--color-colors-redpink-50);
+  --color-colors-background-error-secondary: var(--color-colors-redpink-100);
+  --color-colors-background-error-solid: var(--color-colors-redpink-600);
+  --color-colors-background-error-solid-hover: var(--color-colors-redpink-700);
+  --color-colors-background-success-primary: var(--color-colors-teal-50);
+  --color-colors-background-success-secondary: var(--color-colors-teal-100);
+  --color-colors-background-success-solid: var(--color-colors-teal-600);
+
+  --color-colors-effects-focus-ring: var(--color-colors-teal-500);
+  --color-colors-effects-focus-ring-alt: var(--color-colors-teal-600);
+  --color-colors-effects-focus-ring-gray: var(--color-colors-cool-gray-600);
+  --color-colors-effects-focus-ring-error: var(--color-colors-redpink-500);
+
+  /* Utility (Badge/Tag 등 상태 표현용) */
+  --color-component-colors-alpha-white-100: var(--color-colors-base-white);
+  --color-component-colors-utility-gray-50: var(--color-colors-cool-gray-50);
+  --color-component-colors-utility-gray-100: var(--color-colors-cool-gray-100);
+  --color-component-colors-utility-gray-200: var(--color-colors-cool-gray-200);
+  --color-component-colors-utility-gray-300: var(--color-colors-cool-gray-300);
+  --color-component-colors-utility-gray-400: var(--color-colors-cool-gray-400);
+  --color-component-colors-utility-gray-500: var(--color-colors-cool-gray-500);
+  --color-component-colors-utility-gray-600: var(--color-colors-cool-gray-600);
+  --color-component-colors-utility-gray-700: var(--color-colors-cool-gray-700);
+  --color-component-colors-utility-gray-800: var(--color-colors-cool-gray-800);
+  --color-component-colors-utility-gray-900: var(--color-colors-cool-gray-900);
+  --color-component-colors-utility-brand-50: var(--color-colors-teal-50);
+  --color-component-colors-utility-brand-100: var(--color-colors-teal-100);
+  --color-component-colors-utility-brand-200: var(--color-colors-teal-200);
+  --color-component-colors-utility-brand-300: var(--color-colors-teal-300);
+  --color-component-colors-utility-brand-400: var(--color-colors-teal-400);
+  --color-component-colors-utility-brand-500: var(--color-colors-teal-500);
+  --color-component-colors-utility-brand-600: var(--color-colors-teal-600);
+  --color-component-colors-utility-brand-700: var(--color-colors-teal-700);
+  --color-component-colors-utility-brand-800: var(--color-colors-teal-800);
+  --color-component-colors-utility-brand-900: var(--color-colors-teal-900);
+  --color-component-colors-utility-red-50: var(--color-colors-redpink-50);
+  --color-component-colors-utility-red-100: var(--color-colors-redpink-100);
+  --color-component-colors-utility-red-200: var(--color-colors-redpink-200);
+  --color-component-colors-utility-red-300: var(--color-colors-redpink-300);
+  --color-component-colors-utility-red-400: var(--color-colors-redpink-400);
+  --color-component-colors-utility-red-500: var(--color-colors-redpink-500);
+  --color-component-colors-utility-red-600: var(--color-colors-redpink-600);
+  --color-component-colors-utility-red-700: var(--color-colors-redpink-700);
+  --color-component-colors-utility-red-800: var(--color-colors-redpink-800);
+  --color-component-colors-utility-red-900: var(--color-colors-redpink-900);
+  --color-component-colors-utility-success-50: var(--color-colors-teal-50);
+  --color-component-colors-utility-success-100: var(--color-colors-teal-100);
+  --color-component-colors-utility-success-200: var(--color-colors-teal-200);
+  --color-component-colors-utility-success-300: var(--color-colors-teal-300);
+  --color-component-colors-utility-success-400: var(--color-colors-teal-400);
+  --color-component-colors-utility-success-500: var(--color-colors-teal-500);
+  --color-component-colors-utility-success-600: var(--color-colors-teal-600);
+  --color-component-colors-utility-success-700: var(--color-colors-teal-700);
+  --color-component-colors-utility-success-800: var(--color-colors-teal-800);
+  --color-component-colors-utility-success-900: var(--color-colors-teal-900);
+  --color-component-colors-utility-blue-50: var(--color-colors-blue-50);
+  --color-component-colors-utility-blue-100: var(--color-colors-blue-100);
+  --color-component-colors-utility-blue-200: var(--color-colors-blue-200);
+  --color-component-colors-utility-blue-300: var(--color-colors-blue-300);
+  --color-component-colors-utility-blue-400: var(--color-colors-blue-400);
+  --color-component-colors-utility-blue-500: var(--color-colors-blue-500);
+  --color-component-colors-utility-blue-600: var(--color-colors-blue-600);
+  --color-component-colors-utility-blue-700: var(--color-colors-blue-700);
+  --color-component-colors-utility-blue-800: var(--color-colors-blue-800);
+  --color-component-colors-utility-blue-900: var(--color-colors-blue-900);
+  --color-component-colors-utility-purple-50: var(--color-colors-purple-50);
+  --color-component-colors-utility-purple-100: var(--color-colors-purple-100);
+  --color-component-colors-utility-purple-200: var(--color-colors-purple-200);
+  --color-component-colors-utility-purple-300: var(--color-colors-purple-300);
+  --color-component-colors-utility-purple-400: var(--color-colors-purple-400);
+  --color-component-colors-utility-purple-500: var(--color-colors-purple-500);
+  --color-component-colors-utility-purple-600: var(--color-colors-purple-600);
+  --color-component-colors-utility-purple-700: var(--color-colors-purple-700);
+  --color-component-colors-utility-purple-800: var(--color-colors-purple-800);
+  --color-component-colors-utility-purple-900: var(--color-colors-purple-900);
+
+  /* ============================================================
+   * Dimension — Spacing / Radius / Font size / Line height (Primitive)
+   * ============================================================ */
+  --dimension-spacing-0-0px: 0px;
+  --dimension-spacing-0-5-2px: 2px;
+  --dimension-spacing-1-4px: 4px;
+  --dimension-spacing-1-5-6px: 6px;
+  --dimension-spacing-2-8px: 8px;
+  --dimension-spacing-2-5-10px: 10px;
+  --dimension-spacing-3-12px: 12px;
+  --dimension-spacing-4-16px: 16px;
+  --dimension-spacing-5-20px: 20px;
+  --dimension-spacing-6-24px: 24px;
+  --dimension-spacing-8-32px: 32px;
+  --dimension-spacing-10-40px: 40px;
+  --dimension-spacing-12-48px: 48px;
+  --dimension-spacing-16-64px: 64px;
+  --dimension-spacing-20-80px: 80px;
+  --dimension-spacing-24-96px: 96px;
+  --dimension-spacing-32-128px: 128px;
+  --dimension-spacing-40-160px: 160px;
+  --dimension-spacing-48-192px: 192px;
+  --dimension-spacing-56-224px: 224px;
+  --dimension-spacing-64-256px: 256px;
+  --dimension-spacing-80-320px: 320px;
+  --dimension-spacing-96-384px: 384px;
+  --dimension-spacing-120-480px: 480px;
+  --dimension-spacing-140-560px: 560px;
+  --dimension-spacing-160-640px: 640px;
+  --dimension-spacing-180-720px: 720px;
+  --dimension-spacing-192-768px: 768px;
+  --dimension-spacing-256-1-024px: 1024px;
+  --dimension-spacing-320-1-280px: 1280px;
+  --dimension-spacing-360-1-440px: 1440px;
+  --dimension-spacing-400-1-600px: 1600px;
+  --dimension-spacing-480-1-920px: 1920px;
+
+  --dimension-radius-none: 0px;
+  --dimension-radius-xxs: 2px;
+  --dimension-radius-xs: 4px;
+  --dimension-radius-sm: 6px;
+  --dimension-radius-md: 8px;
+  --dimension-radius-lg: 10px;
+  --dimension-radius-xl: 12px;
+  --dimension-radius-2xl: 16px;
+  --dimension-radius-3xl: 20px;
+  --dimension-radius-4xl: 24px;
+  --dimension-radius-full: 9999px;
+
+  /* Font size / Line height — 렛서 홈페이지 자체 타입 스케일 (2026-08-04 확정)
+   * 폰트 패밀리는 Pretendard Variable 유지 (제품 시스템이 Asta Sans로 바꿨지만
+   * 홈페이지는 따라가지 않음 — 의사결정로그 참고).
+   * 52px(Heading 700)보다 큰 사이즈는 등록 안 함 — 필요 빈도가 낮다고 판단(의사결정로그 참고).
+   */
+  --dimension-font-size-caption-100: 12px;
+  --dimension-font-size-caption-200: 13px;
+  --dimension-font-size-paragraph-100: 14px;
+  --dimension-font-size-paragraph-200: 16px;
+  --dimension-font-size-title-100: 18px;
+  --dimension-font-size-title-200: 20px;
+  --dimension-font-size-title-250: 22px;
+  --dimension-font-size-title-300: 24px;
+  --dimension-font-size-heading-100: 28px;
+  --dimension-font-size-heading-200: 30px;
+  --dimension-font-size-heading-300: 32px;
+  --dimension-font-size-heading-400: 36px;
+  --dimension-font-size-heading-500: 40px;
+  --dimension-font-size-heading-600: 44px;
+  --dimension-font-size-heading-700: 52px;
+
+  --dimension-line-height-caption-100: 18px;
+  --dimension-line-height-caption-200: 19px;
+  --dimension-line-height-paragraph-100: 20px;
+  --dimension-line-height-paragraph-200: 24px;
+  --dimension-line-height-title-100: 28px;
+  --dimension-line-height-title-200: 30px;
+  --dimension-line-height-title-250: 31px;
+  --dimension-line-height-title-300: 36px;
+  --dimension-line-height-heading-100: 42px;
+  --dimension-line-height-heading-200: 42px;
+  --dimension-line-height-heading-300: 44px;
+  --dimension-line-height-heading-400: 46px;
+  --dimension-line-height-heading-500: 52px;
+  --dimension-line-height-heading-600: 58px;
+  --dimension-line-height-heading-700: 68px;
+
+  --dimension-container-padding-mobile: var(--dimension-spacing-4-16px);
+  --dimension-container-padding-desktop: var(--dimension-spacing-8-32px);
+  --dimension-container-max-width-desktop: var(--dimension-spacing-320-1-280px);
+
+  --dimension-width-xxs: var(--dimension-spacing-80-320px);
+  --dimension-width-xs: var(--dimension-spacing-96-384px);
+  --dimension-width-sm: var(--dimension-spacing-120-480px);
+  --dimension-width-md: var(--dimension-spacing-140-560px);
+  --dimension-width-lg: var(--dimension-spacing-160-640px);
+  --dimension-width-xl: var(--dimension-spacing-192-768px);
+  --dimension-width-2xl: var(--dimension-spacing-256-1-024px);
+  --dimension-width-3xl: var(--dimension-spacing-320-1-280px);
+  --dimension-width-4xl: var(--dimension-spacing-360-1-440px);
+  --dimension-width-5xl: var(--dimension-spacing-400-1-600px);
+  --dimension-width-6xl: var(--dimension-spacing-480-1-920px);
+  --dimension-paragraph-max-width: var(--dimension-spacing-180-720px);
+
+  --dimension-spacing-none: var(--dimension-spacing-0-0px);
+  --dimension-spacing-xxs: var(--dimension-spacing-0-5-2px);
+  --dimension-spacing-xs: var(--dimension-spacing-1-4px);
+  --dimension-spacing-sm: var(--dimension-spacing-1-5-6px);
+  --dimension-spacing-md: var(--dimension-spacing-2-8px);
+  --dimension-spacing-md-lg: var(--dimension-spacing-2-5-10px);
+  --dimension-spacing-lg: var(--dimension-spacing-3-12px);
+  --dimension-spacing-xl: var(--dimension-spacing-4-16px);
+  --dimension-spacing-2xl: var(--dimension-spacing-5-20px);
+  --dimension-spacing-3xl: var(--dimension-spacing-6-24px);
+  --dimension-spacing-4xl: var(--dimension-spacing-8-32px);
+  --dimension-spacing-5xl: var(--dimension-spacing-10-40px);
+  --dimension-spacing-6xl: var(--dimension-spacing-12-48px);
+  --dimension-spacing-7xl: var(--dimension-spacing-16-64px);
+  --dimension-spacing-8xl: var(--dimension-spacing-20-80px);
+  --dimension-spacing-9xl: var(--dimension-spacing-24-96px);
+  --dimension-spacing-10xl: var(--dimension-spacing-32-128px);
+  --dimension-spacing-11xl: var(--dimension-spacing-40-160px);
+
+  /* ============================================================
+   * String — 폰트 패밀리 / 웨이트 이름 (Primitive)
+   * ============================================================ */
+  --string-font-family-font-family-display: "Pretendard Variable";
+  --string-font-family-font-family-body: "Pretendard Variable";
+  --string-font-weight-regular: "Regular";
+  --string-font-weight-medium: "Medium";
+  --string-font-weight-semibold: "Semibold";
+  --string-font-weight-bold: "Bold";
+}
