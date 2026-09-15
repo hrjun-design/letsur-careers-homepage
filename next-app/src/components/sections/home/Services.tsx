@@ -37,8 +37,8 @@ export default function Services() {
           </h2>
         </div>
         <p className="text-base font-normal text-white lg:text-lg">
-          렛서가 제공하는 AI 제품과 서비스의 가치는 고객의 비즈니스 성공으로 이어질 때 비로소 완성됩니다.
-          <br />
+          렛서가 제공하는 AI 제품과 서비스의 가치는 고객의 비즈니스 성공으로 이어질 때 비로소 완성됩니다.{" "}
+          <br className="hidden lg:block" />
           우리는 기업의 AI 전환 전 과정을 지원하기 위해, 전문 컨설팅부터 AI 교육과 실제적인 개발 및 유지보수까지 전방위적인 서비스를 제공하고 있습니다.
         </p>
       </div>
@@ -49,7 +49,7 @@ export default function Services() {
               <Image src={service.img} alt="" fill sizes="(min-width: 1024px) 608px, 100vw" className="object-cover" />
               <div className="absolute inset-0 bg-black/50" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <img src={service.logo} alt="" className="h-[32px] w-auto" />
+                <img src={service.logo} alt="" className="h-[29px] w-auto lg:h-[32px]" />
               </div>
             </div>
             <div className="flex w-full flex-col justify-center gap-[30px] px-[20px] py-[30px] lg:w-1/2 lg:px-[40px] lg:py-[60px]">
@@ -60,7 +60,7 @@ export default function Services() {
                   <br />
                   {service.titleLine2}
                 </h3>
-                <p className="text-sm font-normal text-[#333333] lg:text-base">{service.desc}</p>
+                <p className="text-base font-normal text-[#333333]">{service.desc}</p>
               </div>
               {service.external ? (
                 <a

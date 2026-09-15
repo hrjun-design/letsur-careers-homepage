@@ -29,8 +29,8 @@ export default function CoreValues() {
           </h2>
         </div>
         <p className="text-base font-normal text-[#333333] lg:text-lg">
-          렛서는 AI와 비즈니스 혁신을 통해 산업을 선도하며, 다음의 핵심 가치들을 바탕으로 성장과 혁신을 함께 만들어갑니다.
-          <br />
+          렛서는 AI와 비즈니스 혁신을 통해 산업을 선도하며, 다음의 핵심 가치들을 바탕으로 성장과 혁신을 함께 만들어갑니다.{" "}
+          <br className="hidden lg:block" />
           핵심 가치는 복잡한 비즈니스 문제 앞에서 올바른 판단을 내리도록 돕는 기준이며, 동시에 같은 방향을 바라보는 팀의 근간이 됩니다.
         </p>
       </div>

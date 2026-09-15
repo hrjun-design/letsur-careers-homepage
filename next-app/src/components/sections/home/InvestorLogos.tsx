@@ -16,7 +16,7 @@ export default function InvestorLogos() {
         </h2>
         <div className="flex w-full flex-wrap items-center justify-center gap-x-[30px] gap-y-[24px] lg:flex-nowrap lg:justify-between lg:gap-0">
           {LOGOS.map((logo) => (
-            <div key={logo.name} className="relative h-[40px] w-[133px] shrink-0 lg:h-[60px] lg:w-[200px]">
+            <div key={logo.name} className="relative h-[45px] w-[150px] shrink-0 lg:h-[60px] lg:w-[200px]">
               <Image src={logo.src} alt={logo.name} fill sizes="200px" className="object-contain lg:object-left" />
             </div>
           ))}

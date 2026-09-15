@@ -58,8 +58,8 @@ export default function Roadmap() {
           </h2>
         </div>
         <p className="text-base font-normal text-[#333333] lg:text-lg">
-          렛서는 발굴–구현–정착이라는 단계별 전환 과정을 통해 기업이 AI를 안전하고 효율적으로 내재화할 수 있도록 돕습니다.
-          <br />
+          렛서는 발굴–구현–정착이라는 단계별 전환 과정을 통해 기업이 AI를 안전하고 효율적으로 내재화할 수 있도록 돕습니다.{" "}
+          <br className="hidden lg:block" />
           단순히 AI를 제공하는 공급자가 아니라, 변화의 전 과정을 함께 걸어가는 파트너로서 기업이 지속 가능한 AI 혁신을
           이룰 수 있도록 지원합니다.
         </p>
