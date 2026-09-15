@@ -13,13 +13,15 @@ export default function FooterBanner() {
     >
       <div className="relative z-10 flex w-full max-w-[1080px] flex-col items-center gap-[24px] text-center">
         <h2 className="text-[26px] leading-[1.4] font-semibold text-white lg:text-[36px]">
-          한국을 넘어 아시아의 AI의 기준이 될 팀 렛서,
+          한국을 넘어 아시아의 AI의{" "}
+          <br className="lg:hidden" />
+          기준이 될 팀 렛서,
           <br />
           그 성장의 중심에 함께하세요
         </h2>
         <Link
           href="/recruit"
-          className="flex h-[56px] items-center justify-center bg-[#111111] px-[40px] py-[14px] text-lg font-semibold text-white transition-colors hover:bg-[#222222]"
+          className="flex items-center justify-center bg-[#111111] px-[24px] py-[12px] text-base font-semibold text-white transition-colors hover:bg-[#222222] lg:h-[56px] lg:px-[40px] lg:py-[14px] lg:text-lg"
         >
           채용 공고 보러가기
         </Link>

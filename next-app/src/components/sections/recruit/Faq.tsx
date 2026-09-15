@@ -117,11 +117,11 @@ export default function Faq() {
                       onClick={() => setOpenKey(open ? null : key)}
                       className="flex w-full items-center py-[30px] text-left"
                     >
-                      <span className="w-[42px] shrink-0 text-[20px] leading-[2.1] font-medium text-[#888888]">
+                      <span className="w-[42px] shrink-0 text-base leading-[1.6] font-medium text-[#888888] lg:text-[20px] lg:leading-[2.1]">
                         Q.
                       </span>
                       <span className="flex flex-1 items-center justify-between gap-[16px]">
-                        <span className="text-[20px] leading-[1.5] font-medium text-[#111111]">{item.q}</span>
+                        <span className="text-base leading-[1.5] font-medium text-[#111111] lg:text-[20px]">{item.q}</span>
                         <svg
                           viewBox="0 0 40 41"
                           fill="none"

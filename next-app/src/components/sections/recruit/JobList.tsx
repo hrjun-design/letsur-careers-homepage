@@ -210,7 +210,7 @@ export default function JobList({ jobs }: { jobs: Job[] }) {
             href={`/recruit/${job.slug}`}
             className="flex flex-col gap-[12px] border-b border-[#e1e1e1] py-[30px] no-underline lg:border-none lg:py-[18px]"
           >
-            <p className="text-[24px] leading-[1.4] font-semibold text-[#111111]">{job.title}</p>
+            <p className="text-[20px] leading-[1.4] font-semibold text-[#111111] lg:text-[24px]">{job.title}</p>
             <div className="flex items-center gap-[12px]">
               <span className="text-sm text-[#888888] lg:text-base">{job.group}</span>
               <span className="h-[18px] w-px bg-[#e1e1e1]" />

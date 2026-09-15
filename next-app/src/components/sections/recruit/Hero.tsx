@@ -10,12 +10,20 @@ export default function Hero() {
     <section className="relative -mt-[56px] h-[300px] w-full overflow-hidden bg-[#111] lg:-mt-[86px] lg:h-[512px]">
       <div className="absolute inset-x-0 top-[56px] bottom-0 lg:top-[86px]">
         <Image
+          src="/images/recruit/hero-mobile.png"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover lg:hidden"
+        />
+        <Image
           src="/images/recruit/hero-desktop.png"
           alt=""
           fill
           priority
           sizes="100vw"
-          className="object-cover"
+          className="hidden object-cover lg:block"
         />
       </div>
       <div className="absolute inset-0 bg-black/10" />

@@ -60,14 +60,14 @@ export default function Process() {
         </p>
       </div>
 
-      <div className="mt-[40px] grid w-full max-w-[1216px] grid-cols-2 gap-[24px] lg:mt-[45px] lg:grid-cols-4 lg:gap-[16px]">
+      <div className="mt-[40px] grid w-full max-w-[1216px] grid-cols-1 gap-[24px] md:grid-cols-2 lg:mt-[45px] lg:grid-cols-4 lg:gap-[16px]">
         {STEPS.map((s) => (
-          <div key={s.num} className="flex flex-col bg-[#f5f6f7] p-[24px] lg:p-[40px_30px_50px]">
+          <div key={s.num} className="flex flex-col bg-[#f5f6f7] p-[24px_24px_32px] lg:p-[40px_30px_50px]">
             <div className="mb-[14px] border-b border-[#9e9e9e4d] pb-[14px] lg:mb-[20px] lg:pb-[30px]">
               <p className="text-[18px] leading-[1.4] font-semibold text-[#00ab7f] lg:text-[22px]">{s.num}</p>
               <p className="mt-[4px] text-[22px] leading-[1.5] font-semibold text-[#111111] lg:text-[24px]">{s.title}</p>
             </div>
-            <ul className="flex flex-col gap-[8px]">
+            <ul className="flex flex-col gap-[4px]">
               {s.items.map((item) => (
                 <li key={item} className="flex gap-[8px] text-base leading-[1.5] text-[#333333]">
                   <span className="mt-[9px] h-[4px] w-[4px] shrink-0 rounded-full bg-current" />
