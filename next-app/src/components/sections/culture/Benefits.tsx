@@ -54,9 +54,9 @@ export default function Benefits() {
           />
         </div>
       </div>
-      <div className="mt-[40px] grid w-full max-w-[1216px] grid-cols-2 lg:mt-[80px] lg:grid-cols-3">
+      <div className="mt-[60px] mb-[40px] grid w-full max-w-[1216px] grid-cols-2 gap-x-[24px] gap-y-[60px] lg:mt-[80px] lg:mb-0 lg:grid-cols-3 lg:gap-0">
         {BENEFITS.map((b) => (
-          <div key={b.title} className="flex flex-col items-start gap-[16px] bg-white p-[16px] lg:gap-[24px] lg:p-[34px_30px]">
+          <div key={b.title} className="flex flex-col items-start gap-[16px] bg-white p-0 lg:gap-[24px] lg:p-[34px_30px]">
             <img src={b.icon} alt="" className="h-[40px] w-[40px] lg:h-[48px] lg:w-[48px]" />
             <div className="flex flex-col gap-[6px]">
               <p className="text-[20px] leading-[1.4] font-semibold text-[#111111] lg:text-[22px]">{b.title}</p>

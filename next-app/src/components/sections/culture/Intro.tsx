@@ -175,6 +175,21 @@ export default function Intro() {
           <ArrowIcon direction="right" />
         </button>
       </div>
+      <div className="flex items-center justify-center gap-[8px]">
+        {SLIDES.map((_, i) => (
+          <button
+            key={i}
+            type="button"
+            aria-label={`${i + 1}번째 슬라이드로 이동`}
+            onClick={() => {
+              if (i === index) return;
+              if (i === nextIndex) handleNextClick();
+              else if (i === prevIndex) handlePrevClick();
+            }}
+            className={`size-[8px] rounded-full transition-colors ${i === index ? "bg-[#00ab7f]" : "bg-[#d9d9d9]"}`}
+          />
+        ))}
+      </div>
     </section>
   );
 }

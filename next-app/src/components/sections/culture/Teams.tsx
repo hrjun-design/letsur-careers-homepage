@@ -64,7 +64,7 @@ export default function Teams() {
             <div className="relative aspect-[1.64] w-full overflow-hidden bg-[#f5f5f5]">
               <Image src={team.img} alt="" fill sizes="(min-width: 1024px) 590px, 100vw" className="object-cover" />
             </div>
-            <div className="flex flex-col gap-[12px] p-[30px]">
+            <div className="flex flex-col gap-[12px] px-[20px] py-[30px] lg:p-[30px]">
               <h3 className="text-[22px] leading-[1.4] font-semibold text-[#111111]">{team.name}</h3>
               <p className="text-base font-normal leading-[1.5] text-[#333333]">{team.desc}</p>
             </div>

@@ -141,6 +141,7 @@ export default function Review() {
   const slotsShifted = transitioning === "forward" ? 2 : transitioning === "backward" ? 0 : 1;
 
   return (
+    <>
     <section className="flex w-full items-center justify-center bg-[#eeeff0] py-[60px] lg:py-[100px]">
       <div className="relative w-full max-w-[1216px]">
         <div className="overflow-hidden">
@@ -175,5 +176,21 @@ export default function Review() {
         </button>
       </div>
     </section>
+    <div className="flex w-full items-center justify-center gap-[8px] bg-white py-[16px]">
+      {VOICES.map((_, i) => (
+        <button
+          key={i}
+          type="button"
+          aria-label={`${i + 1}번째 인사말로 이동`}
+          onClick={() => {
+            if (i === index) return;
+            if (i === nextIndex) handleNextClick();
+            else if (i === prevIndex) handlePrevClick();
+          }}
+          className={`size-[8px] rounded-full transition-colors ${i === index ? "bg-[#00ab7f]" : "bg-[#d9d9d9]"}`}
+        />
+      ))}
+    </div>
+    </>
   );
 }
