@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -29,6 +30,7 @@ export type Job = {
   career: string;
   type: string;
   slug: string;
+  isPinned: boolean;
 };
 
 const GROUP_OPTIONS = ["Business", "Sales", "AI", "Product"];
@@ -127,8 +129,11 @@ export default function JobList({ jobs }: { jobs: Job[] }) {
   const [career, setCareer] = useState("");
   const [type, setType] = useState("");
 
+  const pinnedJob = jobs.find((job) => job.isPinned) ?? null;
+
   const filtered = useMemo(() => {
     return jobs.filter((job) => {
+      if (job.isPinned) return false;
       if (search && !job.title.toLowerCase().includes(search.toLowerCase())) return false;
       if (group && job.group !== group) return false;
       if (career && job.career !== career) return false;
@@ -144,10 +149,27 @@ export default function JobList({ jobs }: { jobs: Job[] }) {
           <p className="mb-[4px] text-base font-semibold text-[#00ab7f]">Job Opening</p>
           <h2 className="text-[26px] leading-[1.4] font-semibold text-[#111111] lg:text-[36px]">채용 중인 공고</h2>
         </div>
-        <p className="text-lg font-normal text-[#333333]">렛서의 성장에 힘이 되어줄 여러분과의 만남을 기대합니다.</p>
       </div>
 
-      <div className="mt-[40px] flex w-full max-w-[1216px] flex-col gap-[10px] lg:mt-[45px] lg:flex-row lg:gap-[12px]">
+      {pinnedJob && (
+        <Link
+          href={`/recruit/${pinnedJob.slug}`}
+          className="relative mt-[32px] flex w-full max-w-[1216px] flex-col items-center justify-center gap-[16px] overflow-hidden px-[24px] py-[36px] text-center no-underline lg:mt-[36px] lg:h-[234px] lg:gap-[14px] lg:px-[40px] lg:py-[48px]"
+        >
+          <Image src="/images/recruit/banner-bg.png" alt="" fill sizes="100vw" className="object-cover" />
+          <div className="relative z-10 flex w-full flex-col items-center gap-[4px]">
+            <p className="text-2xl font-semibold text-white lg:text-3xl">{pinnedJob.title}</p>
+            <p className="text-base text-white lg:text-lg">
+              렛서의 성장에 힘이 되어줄 여러분과의 만남을 기대합니다.
+            </p>
+          </div>
+          <span className="relative z-10 flex h-[52px] w-[183px] shrink-0 items-center justify-center bg-black text-lg font-semibold text-white transition-colors hover:bg-[#222222]">
+            지원하기
+          </span>
+        </Link>
+      )}
+
+      <div className="mt-[32px] flex w-full max-w-[1216px] flex-col gap-[10px] lg:mt-[36px] lg:flex-row lg:gap-[12px]">
         <div className="relative flex-1">
           <svg
             width="20"

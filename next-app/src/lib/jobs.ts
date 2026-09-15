@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase";
  * 참조(FK)하므로, PostgREST 임베디드 리소스 문법(`job_groups(name)`)으로 조인해 표시 라벨을 가져온다.
  */
 const JOB_SELECT =
-  "slug, title, location, apply_url, description_html, display_date, job_groups(name), careers(name), employment_types(name)";
+  "slug, title, location, apply_url, description_html, display_date, is_pinned, job_groups(name), careers(name), employment_types(name)";
 
 type JobRow = {
   slug: string;
@@ -15,6 +15,7 @@ type JobRow = {
   apply_url: string | null;
   description_html: string | null;
   display_date: string | null;
+  is_pinned: boolean;
   job_groups: { name: string } | null;
   careers: { name: string } | null;
   employment_types: { name: string } | null;
@@ -26,6 +27,7 @@ export type JobSummary = {
   group: string;
   career: string;
   type: string;
+  isPinned: boolean;
 };
 
 export type JobDetail = JobSummary & {
@@ -42,6 +44,7 @@ function toDetail(row: JobRow): JobDetail {
     group: row.job_groups?.name ?? "",
     career: row.careers?.name ?? "",
     type: row.employment_types?.name ?? "",
+    isPinned: row.is_pinned,
     location: row.location,
     applyUrl: row.apply_url,
     descriptionHtml: row.description_html,
@@ -54,6 +57,7 @@ export async function getOpenJobs(): Promise<JobSummary[]> {
     .from("jobs")
     .select(JOB_SELECT)
     .eq("status", "open")
+    .order("is_pinned", { ascending: false })
     .order("display_date", { ascending: false });
 
   if (error) {

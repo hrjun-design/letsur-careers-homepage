@@ -11,8 +11,10 @@ import { getJobBySlug } from "@/lib/jobs";
  *   못 가져와서, 통상적인 컨벤션(넓은 본문 왼쪽 + 좁은 sticky 정보카드 오른쪽)으로 대체 구현.
  * - 지도(구글맵·네이버맵)는 실서버도 구글맵은 `display:none`으로 숨겨두고 네이버맵만 쓰는데, 네이버맵은
  *   자체 API 키(ncpKeyId)가 필요해 이번엔 생략 — 주소 텍스트만 노출.
- * - "지원하기" 버튼(`.text-block-82`, point-green 배경 52px)은 외부 채용 플랫폼(원티드/그리팅/remember
- *   등)으로 연결 — 이 사이트엔 자체 지원 폼 없음. apply_url이 없는 공고(초안 단계 등)는 버튼 숨김.
+ * - "지원하기" 버튼(`.text-block-82`, point-green 배경 52px)은 기본적으로 외부 채용 플랫폼(원티드/
+ *   그리팅/remember 등)으로 연결. apply_url이 "/"로 시작하면 내부 라우트로 판단해 자체 폼(예: 인재풀
+ *   등록 `/recruit/[slug]/apply`)으로 연결(2026-09-15 추가) — apply_url이 없는 공고(초안 단계 등)는
+ *   버튼 숨김.
  * - 본문 리치텍스트(`.career-post`)는 Webflow 원본 HTML을 그대로 렌더링, 태그별 스타일은 실서버
  *   CSS 값(h3 24px/600, h4 18px/600, p 16px/1.7, ul 16px/1.6 등) 그대로 재현.
  */
@@ -74,16 +76,24 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
                 </div>
               )}
             </div>
-            {job.applyUrl && (
-              <a
-                href={job.applyUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-[30px] flex h-[52px] w-full items-center justify-center bg-[#00ab7f] text-lg font-bold text-white"
-              >
-                지원하기
-              </a>
-            )}
+            {job.applyUrl &&
+              (job.applyUrl.startsWith("/") ? (
+                <Link
+                  href={job.applyUrl}
+                  className="mt-[30px] flex h-[52px] w-full items-center justify-center bg-[#00ab7f] text-lg font-bold text-white"
+                >
+                  지원하기
+                </Link>
+              ) : (
+                <a
+                  href={job.applyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-[30px] flex h-[52px] w-full items-center justify-center bg-[#00ab7f] text-lg font-bold text-white"
+                >
+                  지원하기
+                </a>
+              ))}
           </div>
         </div>
       </section>
