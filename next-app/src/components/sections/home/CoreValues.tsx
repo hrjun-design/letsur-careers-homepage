@@ -20,11 +20,11 @@ const CORE_VALUES = [
 
 export default function CoreValues() {
   return (
-    <section className="flex w-full flex-col items-center gap-[40px] bg-white px-xl py-[73px] lg:gap-[45px] lg:py-[110px]">
-      <div className="flex w-full max-w-[1216px] flex-col gap-[22px]">
+    <section className="flex w-full flex-col items-center gap-[40px] bg-white px-xl pt-[80px] pb-[60px] lg:gap-[45px] lg:py-[110px]">
+      <div className="flex w-full max-w-[1216px] flex-col gap-[14px] lg:gap-[22px]">
         <div className="flex flex-col gap-[8px]">
-          <span className="text-base font-semibold text-[#888888]">Core Value</span>
-          <h2 className="text-[28px] leading-[38px] font-semibold text-[#111111] lg:text-4xl lg:leading-[46px]">
+          <span className="text-sm font-semibold text-[#888888] lg:text-base">Core Value</span>
+          <h2 className="text-[26px] leading-[34px] font-semibold text-[#111111] lg:text-4xl lg:leading-[46px]">
             렛서의 핵심 가치
           </h2>
         </div>
@@ -34,14 +34,14 @@ export default function CoreValues() {
           핵심 가치는 복잡한 비즈니스 문제 앞에서 올바른 판단을 내리도록 돕는 기준이며, 동시에 같은 방향을 바라보는 팀의 근간이 됩니다.
         </p>
       </div>
-      <div className="grid w-full max-w-[1216px] grid-cols-1 gap-[32px] lg:grid-cols-3 lg:gap-[28px]">
+      <div className="grid w-full max-w-[1216px] grid-cols-1 gap-[60px] lg:grid-cols-3 lg:gap-[28px]">
         {CORE_VALUES.map((value) => (
-          <div key={value.title} className="flex flex-col gap-[22px]">
-            <div className="relative h-[220px] w-full overflow-hidden bg-[#f5f5f5] lg:h-[262px]">
+          <div key={value.title} className="flex flex-col gap-[24px] lg:gap-[22px]">
+            <div className="relative aspect-[1.64/1] w-full overflow-hidden bg-[#f5f5f5] lg:aspect-auto lg:h-[262px]">
               <Image src={value.img} alt="" fill sizes="(min-width: 1024px) 380px, 100vw" className="object-cover" />
             </div>
             <div className="flex flex-col gap-[8px]">
-              <h3 className="text-[22px] font-semibold text-[#111111]">{value.title}</h3>
+              <h3 className="text-xl font-semibold text-[#111111] lg:text-[22px]">{value.title}</h3>
               <p className="text-base font-normal text-[#333333]">{value.desc}</p>
             </div>
           </div>

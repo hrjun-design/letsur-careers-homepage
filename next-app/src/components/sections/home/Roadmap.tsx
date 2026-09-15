@@ -1,8 +1,12 @@
 /**
- * 카드 안의 장식용 그래픽은 메인 렛서 홈페이지("렛서 홈페이지 홈화면", `letsur-homepage-3.0`)의
+ * 카드 안의 장식용 그래픽(데스크톱, `image`)은 메인 렛서 홈페이지("렛서 홈페이지 홈화면", `letsur-homepage-3.0`)의
  * `components/sections/main/Roadmap.tsx`가 쓰는 실제 벡터 에셋을 그대로 복사해서 재사용한다
  * (`public/images/main/roadmap/step{1,2,3}.svg` → 이 프로젝트 `public/images/roadmap/`).
  * 이전에 손으로 근사 재현했던 SVG는 폐기 — 2026-09-09 사용자 확정.
+ *
+ * 모바일 전용(`mobileImage`)은 데스크톱 원본에 내장된 여백이 좁은 모바일 카드 폭에서 과도하게
+ * 크게 보이는 문제 때문에, 디자이너가 별도로 크롭해 제공한 파일(2026-09-15) — 1/2단계만
+ * 새로 제공됨. 3단계는 원본이 이미 풀블리드라 데스크톱 파일을 모바일에도 그대로 사용.
  */
 const STEPS = [
   {
@@ -10,6 +14,8 @@ const STEPS = [
     title: "업무 중심의 실전형 AI 교육",
     desc: "다양한 AI 도구를 직접 체험하며, 실제 업무에 바로 적용할 수 있는 방법을 탐색합니다.",
     image: "/images/roadmap/step1.svg",
+    mobileImage: "/images/roadmap/step1-mobile.svg",
+    mobileAspect: "328/220",
     cardBg: "#E9FDF4",
     labelBg: "#FFFFFF",
     labelColor: "#00AB7F",
@@ -20,6 +26,8 @@ const STEPS = [
     title: "맞춤형 AI 솔루션 설계 및 구현",
     desc: "1단계에서 나온 아이디어를 바탕으로, 조직의 목표와 업무 방식에 맞는 AI 솔루션을 설계하고 개발합니다.",
     image: "/images/roadmap/step2.svg",
+    mobileImage: "/images/roadmap/step2-mobile.svg",
+    mobileAspect: "328/220",
     cardBg: "#B2F8D8",
     labelBg: "#EFFFF8",
     labelColor: "#00AB7F",
@@ -30,6 +38,8 @@ const STEPS = [
     title: "AI 활용 확산 및 운영 최적화 지원",
     desc: "운영 중인 AI 솔루션을 통해 직원들이 AI를 업무에 직접 적용하며 효과를 체감하도록 돕습니다.",
     image: "/images/roadmap/step3.svg",
+    mobileImage: "/images/roadmap/step3.svg",
+    mobileAspect: "328/220",
     cardBg: "#014A41",
     labelBg: "#006958",
     labelColor: "#FFFFFF",
@@ -39,11 +49,11 @@ const STEPS = [
 
 export default function Roadmap() {
   return (
-    <section className="flex w-full flex-col items-center gap-[56px] bg-white px-xl py-[73px] lg:gap-[64px] lg:py-[110px]">
-      <div className="flex w-full max-w-[1216px] flex-col gap-[22px]">
+    <section className="flex w-full flex-col items-center gap-[40px] bg-white px-xl pt-[60px] pb-[80px] lg:gap-[64px] lg:py-[110px]">
+      <div className="flex w-full max-w-[1216px] flex-col gap-[14px] lg:gap-[22px]">
         <div className="flex flex-col gap-[8px]">
-          <span className="text-base font-semibold text-[#888888]">AI Roadmap</span>
-          <h2 className="text-[28px] leading-[38px] font-semibold text-[#111111] lg:text-4xl lg:leading-[46px]">
+          <span className="text-sm font-semibold text-[#888888] lg:text-base">AI Roadmap</span>
+          <h2 className="text-[26px] leading-[34px] font-semibold text-[#111111] lg:text-4xl lg:leading-[46px]">
             렛서의 비즈니스 AI 로드맵
           </h2>
         </div>
@@ -59,7 +69,7 @@ export default function Roadmap() {
           <div key={step.n} className="flex flex-1 flex-col" style={{ backgroundColor: step.cardBg }}>
             <div className="flex flex-col p-[20px] lg:p-[36px]">
               <span
-                className="mb-[24px] w-fit rounded-[2px] px-[10px] py-[6px] text-[14px] leading-[20px] font-bold lg:mb-[35px] lg:px-[12px] lg:py-[4px] lg:text-base lg:leading-6 lg:font-semibold"
+                className="mb-[30px] w-fit rounded-[2px] px-[10px] py-[6px] text-[14px] leading-[20px] font-bold lg:mb-[35px] lg:px-[12px] lg:py-[4px] lg:text-base lg:leading-6 lg:font-semibold"
                 style={{ backgroundColor: step.labelBg, color: step.labelColor }}
               >
                 {step.n}
@@ -72,9 +82,15 @@ export default function Roadmap() {
               </p>
             </div>
             <img
+              src={step.mobileImage}
+              alt=""
+              style={{ aspectRatio: step.mobileAspect }}
+              className="mt-auto w-full object-contain lg:hidden"
+            />
+            <img
               src={step.image}
               alt=""
-              className="mt-auto h-[220px] w-full object-contain lg:h-auto lg:w-full lg:object-fill"
+              className="mt-auto hidden h-auto w-full object-fill lg:block"
             />
           </div>
         ))}

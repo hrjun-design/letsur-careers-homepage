@@ -2,11 +2,11 @@ import Image from "next/image";
 
 export default function Mission() {
   return (
-    <section className="flex w-full flex-col items-center gap-[40px] bg-[#111111] px-xl py-[80px] lg:gap-[50px] lg:py-[120px]">
+    <section className="flex w-full flex-col items-center gap-[50px] bg-[#111111] px-xl py-[80px] lg:py-[120px]">
       <div className="flex w-full max-w-[1216px] flex-col gap-[24px]">
         <div className="flex flex-col gap-[8px]">
-          <span className="text-base font-semibold text-[#888888]">Who we are</span>
-          <h2 className="text-[28px] leading-[38px] font-semibold text-white lg:text-4xl lg:leading-[46px]">
+          <span className="text-sm font-semibold text-[#888888] lg:text-base">Who we are</span>
+          <h2 className="text-[26px] leading-[34px] font-semibold text-white lg:text-4xl lg:leading-[46px]">
             우리는 고객사의 <span className="text-[#00c781]">비즈니스 AI 전환 파트너</span>입니다.
           </h2>
         </div>
@@ -25,13 +25,20 @@ export default function Mission() {
           </p>
         </div>
       </div>
-      <div className="relative h-[220px] w-full max-w-[1216px] overflow-hidden bg-[#efefef] lg:h-[440px]">
+      <div className="relative aspect-[1.64/1] w-full max-w-[1216px] overflow-hidden bg-[#efefef] lg:aspect-auto lg:h-[440px]">
+        <Image
+          src="/images/why-letsur/mission-img-mobile.png"
+          alt=""
+          fill
+          sizes="100vw"
+          className="object-cover lg:hidden"
+        />
         <Image
           src="/images/why-letsur/mission-img.png"
           alt=""
           fill
           sizes="(min-width: 1216px) 1216px, 100vw"
-          className="object-cover"
+          className="hidden object-cover lg:block"
         />
       </div>
     </section>

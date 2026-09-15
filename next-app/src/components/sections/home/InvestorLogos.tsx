@@ -9,9 +9,9 @@ const LOGOS = [
 
 export default function InvestorLogos() {
   return (
-    <section className="flex w-full items-center justify-center bg-white px-xl pt-[40px] pb-[150px] lg:pt-[60px] lg:pb-[210px]">
+    <section className="flex w-full items-center justify-center bg-white px-xl pt-[60px] pb-[80px] lg:pt-[60px] lg:pb-[210px]">
       <div className="flex w-full max-w-[1216px] flex-col items-start gap-[36px] lg:gap-[60px]">
-        <h2 className="text-[28px] leading-[38px] font-semibold text-[#111111] lg:text-4xl lg:leading-[46px]">
+        <h2 className="text-[26px] leading-[34px] font-semibold text-[#111111] lg:text-4xl lg:leading-[46px]">
           렛서와 함께하는 국내 주요 투자사
         </h2>
         <div className="flex w-full flex-wrap items-center justify-center gap-x-[30px] gap-y-[24px] lg:flex-nowrap lg:justify-between lg:gap-0">

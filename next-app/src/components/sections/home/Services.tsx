@@ -29,10 +29,10 @@ const SERVICES = [
 export default function Services() {
   return (
     <section className="flex w-full flex-col items-center gap-[40px] bg-[#111111] px-xl py-[80px] lg:gap-[45px] lg:py-[120px]">
-      <div className="flex w-full max-w-[1216px] flex-col gap-[22px]">
+      <div className="flex w-full max-w-[1216px] flex-col gap-[14px] lg:gap-[22px]">
         <div className="flex flex-col gap-[8px]">
-          <span className="text-base font-semibold text-[#888888]">Service</span>
-          <h2 className="text-[28px] leading-[38px] font-semibold text-white lg:text-4xl lg:leading-[46px]">
+          <span className="text-sm font-semibold text-[#888888] lg:text-base">Service</span>
+          <h2 className="text-[26px] leading-[34px] font-semibold text-white lg:text-4xl lg:leading-[46px]">
             제품과 서비스
           </h2>
         </div>
@@ -45,36 +45,36 @@ export default function Services() {
       <div className="flex w-full max-w-[1216px] flex-col gap-[40px] lg:gap-[20px]">
         {SERVICES.map((service) => (
           <div key={service.key} className="flex flex-col items-stretch bg-white lg:flex-row">
-            <div className="relative h-[240px] w-full lg:h-[388px] lg:w-1/2">
+            <div className="relative aspect-[1216/776] w-full lg:aspect-auto lg:h-[388px] lg:w-1/2">
               <Image src={service.img} alt="" fill sizes="(min-width: 1024px) 608px, 100vw" className="object-cover" />
               <div className="absolute inset-0 bg-black/50" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <img src={service.logo} alt="" className="h-[32px] w-auto" />
               </div>
             </div>
-            <div className="flex w-full flex-col justify-center gap-[20px] px-[20px] py-[30px] lg:w-1/2 lg:gap-[30px] lg:px-[40px] lg:py-[60px]">
-              <div className="flex flex-col gap-[15px]">
+            <div className="flex w-full flex-col justify-center gap-[30px] px-[20px] py-[30px] lg:w-1/2 lg:px-[40px] lg:py-[60px]">
+              <div className="flex flex-col gap-[14px] lg:gap-[15px]">
                 <h3 className="text-xl font-semibold text-[#111111] lg:text-2xl">
                   <span className="text-[#00ab7f]">{service.titleHighlight}</span>
                   {service.titleRest}
                   <br />
                   {service.titleLine2}
                 </h3>
-                <p className="text-base font-normal text-[#333333]">{service.desc}</p>
+                <p className="text-sm font-normal text-[#333333] lg:text-base">{service.desc}</p>
               </div>
               {service.external ? (
                 <a
                   href={service.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex w-fit items-center justify-center gap-[8px] bg-black px-[24px] py-[12px] text-[16px] leading-[24px] font-medium text-white transition-opacity hover:opacity-80"
+                  className="inline-flex h-[42px] w-fit items-center justify-center gap-[8px] bg-black px-[20px] py-[10px] text-sm leading-[24px] font-medium text-white transition-opacity hover:opacity-80 lg:h-auto lg:px-[24px] lg:py-[12px] lg:text-[16px]"
                 >
                   더 알아보기 →
                 </a>
               ) : (
                 <Link
                   href={service.href}
-                  className="inline-flex w-fit items-center justify-center gap-[8px] bg-black px-[24px] py-[12px] text-[16px] leading-[24px] font-medium text-white transition-opacity hover:opacity-80"
+                  className="inline-flex h-[42px] w-fit items-center justify-center gap-[8px] bg-black px-[20px] py-[10px] text-sm leading-[24px] font-medium text-white transition-opacity hover:opacity-80 lg:h-auto lg:px-[24px] lg:py-[12px] lg:text-[16px]"
                 >
                   더 알아보기 →
                 </Link>

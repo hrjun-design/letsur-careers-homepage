@@ -17,9 +17,9 @@ const LOGOS = [
 
 export default function ClientLogos() {
   return (
-    <section className="flex w-full items-center justify-center bg-white px-xl pt-[100px] pb-[60px] lg:pt-[160px] lg:pb-[80px]">
-      <div className="flex w-full max-w-[1216px] flex-col items-start gap-[36px] lg:gap-[60px]">
-        <h2 className="text-[28px] leading-[38px] font-semibold text-[#111111] lg:text-4xl lg:leading-[46px]">
+    <section className="flex w-full items-center justify-center bg-white px-xl pt-[80px] pb-[60px] lg:pt-[160px] lg:pb-[80px]">
+      <div className="flex w-full max-w-[1216px] flex-col items-start gap-[20px] lg:gap-[60px]">
+        <h2 className="text-[26px] leading-[34px] font-semibold text-[#111111] lg:text-4xl lg:leading-[46px]">
           고객사의 이유있는 선택
         </h2>
         <div className="grid w-full grid-cols-2 justify-items-center gap-x-[20px] gap-y-[30px] lg:grid-cols-6 lg:gap-x-[49px] lg:gap-y-[26px]">
