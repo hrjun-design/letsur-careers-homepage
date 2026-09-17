@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Pencil } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -137,11 +138,20 @@ export function RefCollectionManager({
                   <TableCell className="text-base text-muted-foreground">{row.slug}</TableCell>
                   <TableCell className="text-base text-muted-foreground">{row.sort_order}</TableCell>
                   <TableCell className="text-right">
-                    <div className="flex justify-end gap-3 text-base">
-                      <button type="button" onClick={() => handleEdit(row)} className="underline">
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleEdit(row)}
+                        className="flex items-center gap-0.5 rounded border border-[#d9dbde] bg-white px-2.5 py-[5px] text-[13px] font-medium text-[#6e6e6e]"
+                      >
+                        <Pencil className="size-[14px]" />
                         수정
                       </button>
-                      <button type="button" onClick={() => handleDelete(row)} className="text-red-600 underline">
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(row)}
+                        className="rounded border border-[#ffccd4] bg-[#fff7f9] px-3 py-[5px] text-[13px] font-medium text-[#db3947]"
+                      >
                         삭제
                       </button>
                     </div>
