@@ -60,7 +60,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
   if (!editor) return null;
 
   return (
-    <div className="flex flex-col rounded-lg border border-input">
+    <div className="flex flex-col rounded border border-input">
       <div className="flex items-center gap-0.5 border-b border-input px-1.5 py-1">
         <ToolbarButton
           label="굵게"

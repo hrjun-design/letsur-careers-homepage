@@ -1,12 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Pencil } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 /**
  * 직군/경력사항/고용형태 3개 참조 테이블이 전부 (slug, name, sort_order) 구조로 동일해서,
@@ -138,23 +144,29 @@ export function RefCollectionManager({
                   <TableCell className="text-base text-muted-foreground">{row.slug}</TableCell>
                   <TableCell className="text-base text-muted-foreground">{row.sort_order}</TableCell>
                   <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleEdit(row)}
-                        className="flex items-center gap-0.5 rounded border border-[#d9dbde] bg-white px-2.5 py-[5px] text-[13px] font-medium text-[#6e6e6e]"
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        render={
+                          <button
+                            type="button"
+                            aria-label="작업 메뉴"
+                            className="ml-auto flex size-8 items-center justify-center rounded border border-[#d9dbde] bg-white text-[#6e6e6e]"
+                          />
+                        }
                       >
-                        <Pencil className="size-[14px]" />
-                        수정
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(row)}
-                        className="rounded border border-[#ffccd4] bg-[#fff7f9] px-3 py-[5px] text-[13px] font-medium text-[#db3947]"
-                      >
-                        삭제
-                      </button>
-                    </div>
+                        <MoreHorizontal className="size-[16px]" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => handleEdit(row)}>
+                          <Pencil />
+                          수정
+                        </DropdownMenuItem>
+                        <DropdownMenuItem variant="destructive" onClick={() => handleDelete(row)}>
+                          <Trash2 />
+                          삭제
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
               ))}

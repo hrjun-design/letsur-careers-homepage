@@ -1,15 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ChevronLeft, Pencil, Plus } from "lucide-react";
+import { MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 /**
  * 채용 공고 관리자 화면(2026-09-11 shadcn 대시보드 셸로 재구성) — 인증 가드는
@@ -37,10 +43,22 @@ type JobRow = {
   description_html: string | null;
   display_date: string | null;
   status: "draft" | "open" | "closed";
+  created_at: string;
+  updated_at: string;
   job_groups: { name: string } | null;
   careers: { name: string } | null;
   employment_types: { name: string } | null;
 };
+
+const formatDate = (iso: string) =>
+  new Date(iso).toLocaleString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
 
 const emptyForm = {
   id: null as string | null,
@@ -49,7 +67,7 @@ const emptyForm = {
   job_group_id: "",
   career_id: "",
   employment_type_id: "",
-  location: "",
+  location: "서울 강남구 테헤란로38길 8, 오피스B 13층 (렛서)",
   apply_url: "",
   description_html: "",
   display_date: "",
@@ -143,6 +161,7 @@ export default function AdminRecruitPage() {
       description_html: form.description_html.trim() || null,
       display_date: form.display_date || null,
       status: form.status,
+      updated_at: new Date().toISOString(),
     };
 
     const result = form.id
@@ -198,111 +217,152 @@ export default function AdminRecruitPage() {
     loadJobs();
   };
 
+  /**
+   * 목록에서 바로 쓰는 공개/비공개 빠른 전환 — "마감"(closed)은 여기 포함하지 않고 수정 폼의
+   * 3단 상태 선택(초안/공개/마감)에서만 지정한다(2026-09-17, 목록 메뉴는 공개/비공개/삭제만).
+   */
+  const handleQuickStatus = async (job: JobRow, status: "open" | "draft") => {
+    const { error } = await supabase
+      .from("jobs")
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq("id", job.id);
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    loadJobs();
+  };
+
   if (formOpen) {
     return (
       <div className="flex flex-col gap-4">
         {error && <p className="rounded-md bg-red-50 px-4 py-2 text-base text-red-600">{error}</p>}
 
-        <button
-          type="button"
-          onClick={handleBack}
-          className="flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ChevronLeft className="size-4" />
-          전체 공고
-        </button>
+        <div className="flex items-center justify-between">
+          <span className="text-lg font-semibold text-[#0a0a0a]">{form.id ? "공고 수정" : "새 공고 등록"}</span>
+          <div className="flex gap-2">
+            <Button type="submit" form="job-form" disabled={saving}>
+              {saving ? "저장 중..." : form.id ? "수정 저장" : "등록"}
+            </Button>
+            <Button type="button" variant="outline" onClick={handleBack}>
+              취소
+            </Button>
+          </div>
+        </div>
 
         <Card>
-          <CardHeader>
-            <CardTitle>{form.id ? "공고 수정" : "새 공고 등록"}</CardTitle>
-          </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-              <Input
-                required
-                value={form.title}
-                onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-                placeholder="공고 제목"
-              />
-              <Input
-                required
-                value={form.slug}
-                onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-                placeholder="URL 슬러그 (영문 소문자·숫자·하이픈만)"
-                pattern="[a-z0-9\-]+"
-              />
-              <div className="flex gap-3">
-                <Select
-                  items={groupItems}
-                  value={form.job_group_id}
-                  onValueChange={(v) => setForm((f) => ({ ...f, job_group_id: v ?? f.job_group_id }))}
-                >
-                  <SelectTrigger className="flex-1">
-                    <SelectValue placeholder={`직군 (${groups.length})`} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {groups.map((o) => (
-                      <SelectItem key={o.id} value={o.id}>
-                        {o.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Select
-                  items={careerItems}
-                  value={form.career_id}
-                  onValueChange={(v) => setForm((f) => ({ ...f, career_id: v ?? f.career_id }))}
-                >
-                  <SelectTrigger className="flex-1">
-                    <SelectValue placeholder={`경력사항 (${careers.length})`} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {careers.map((o) => (
-                      <SelectItem key={o.id} value={o.id}>
-                        {o.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Select
-                  items={typeItems}
-                  value={form.employment_type_id}
-                  onValueChange={(v) => setForm((f) => ({ ...f, employment_type_id: v ?? f.employment_type_id }))}
-                >
-                  <SelectTrigger className="flex-1">
-                    <SelectValue placeholder={`고용형태 (${types.length})`} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {types.map((o) => (
-                      <SelectItem key={o.id} value={o.id}>
-                        {o.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex gap-3">
+            <form id="job-form" onSubmit={handleSubmit} className="flex flex-col gap-8">
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-normal text-[#333333]">공고 제목</label>
                 <Input
-                  value={form.location}
-                  onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
-                  placeholder="근무지 (선택)"
-                  className="flex-1"
-                />
-                <Input
-                  type="date"
-                  value={form.display_date}
-                  onChange={(e) => setForm((f) => ({ ...f, display_date: e.target.value }))}
-                  className="w-[160px]"
+                  required
+                  value={form.title}
+                  onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
                 />
               </div>
-              <Input
-                type="url"
-                value={form.apply_url}
-                onChange={(e) => setForm((f) => ({ ...f, apply_url: e.target.value }))}
-                placeholder="지원 링크 (외부 채용 플랫폼 URL, 선택)"
-              />
-              <div className="flex flex-col gap-1">
-                <label className="text-sm text-muted-foreground">상세 설명</label>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-normal text-[#333333]">URL 슬러그 (영문 소문자·숫자·하이픈만)</label>
+                <Input
+                  required
+                  value={form.slug}
+                  onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
+                  pattern="[a-z0-9\-]+"
+                />
+                {/* 웹플로우 CMS의 슬러그 입력 하단 URL 미리보기(careers.letsur.ai/recruit/{slug}) 참고 —
+                    링크 아이콘은 클릭·복사 가능하다는 오해를 줄 수 있어 제외(2026-09-17), 순수 텍스트 미리보기 */}
+                <div className="rounded bg-muted px-2.5 py-1.5 text-sm text-muted-foreground">
+                  <span className="truncate">
+                    careers.letsur.ai/recruit/{form.slug || <span className="italic">슬러그</span>}
+                  </span>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <div className="flex flex-1 flex-col gap-2">
+                  <label className="text-sm font-normal text-[#333333]">직군</label>
+                  <Select
+                    items={groupItems}
+                    value={form.job_group_id}
+                    onValueChange={(v) => setForm((f) => ({ ...f, job_group_id: v ?? f.job_group_id }))}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder={`선택 (${groups.length})`} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {groups.map((o) => (
+                        <SelectItem key={o.id} value={o.id}>
+                          {o.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex flex-1 flex-col gap-2">
+                  <label className="text-sm font-normal text-[#333333]">경력사항</label>
+                  <Select
+                    items={careerItems}
+                    value={form.career_id}
+                    onValueChange={(v) => setForm((f) => ({ ...f, career_id: v ?? f.career_id }))}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder={`선택 (${careers.length})`} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {careers.map((o) => (
+                        <SelectItem key={o.id} value={o.id}>
+                          {o.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex flex-1 flex-col gap-2">
+                  <label className="text-sm font-normal text-[#333333]">고용형태</label>
+                  <Select
+                    items={typeItems}
+                    value={form.employment_type_id}
+                    onValueChange={(v) => setForm((f) => ({ ...f, employment_type_id: v ?? f.employment_type_id }))}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder={`선택 (${types.length})`} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {types.map((o) => (
+                        <SelectItem key={o.id} value={o.id}>
+                          {o.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <div className="flex flex-1 flex-col gap-2">
+                  <label className="text-sm font-normal text-[#333333]">근무지</label>
+                  <Input
+                    value={form.location}
+                    onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
+                  />
+                </div>
+                <div className="flex w-[160px] flex-col gap-2">
+                  <label className="text-sm font-normal text-[#333333]">게시일</label>
+                  <Input
+                    type="date"
+                    value={form.display_date}
+                    onChange={(e) => setForm((f) => ({ ...f, display_date: e.target.value }))}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-normal text-[#333333]">지원 링크 (외부 채용 플랫폼 URL, 선택)</label>
+                <Input
+                  type="url"
+                  value={form.apply_url}
+                  onChange={(e) => setForm((f) => ({ ...f, apply_url: e.target.value }))}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-normal text-[#333333]">상세 설명</label>
                 <RichTextEditor
                   value={form.description_html}
                   onChange={(html) => setForm((f) => ({ ...f, description_html: html }))}
@@ -313,7 +373,7 @@ export default function AdminRecruitPage() {
                 value={form.status}
                 onValueChange={(v) => v && setForm((f) => ({ ...f, status: v as JobRow["status"] }))}
               >
-                <SelectTrigger>
+                <SelectTrigger className="min-w-36">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -322,14 +382,6 @@ export default function AdminRecruitPage() {
                   <SelectItem value="closed">마감</SelectItem>
                 </SelectContent>
               </Select>
-              <div className="flex gap-2">
-                <Button type="submit" disabled={saving}>
-                  {saving ? "저장 중..." : form.id ? "수정 저장" : "등록"}
-                </Button>
-                <Button type="button" variant="outline" onClick={handleBack}>
-                  취소
-                </Button>
-              </div>
             </form>
           </CardContent>
         </Card>
@@ -358,6 +410,8 @@ export default function AdminRecruitPage() {
             <TableHead className="h-[40px] bg-[#f9f9f9]">제목</TableHead>
             <TableHead className="h-[40px] w-[168px] bg-[#f9f9f9]">공개 여부</TableHead>
             <TableHead className="h-[40px] w-[168px] bg-[#f9f9f9]">상태</TableHead>
+            <TableHead className="h-[40px] w-[150px] bg-[#f9f9f9]">생성 날짜</TableHead>
+            <TableHead className="h-[40px] w-[150px] bg-[#f9f9f9]">수정 날짜</TableHead>
             <TableHead className="h-[40px] w-[168px] bg-[#f9f9f9] text-right">작업</TableHead>
           </TableRow>
         </TableHeader>
@@ -392,6 +446,8 @@ export default function AdminRecruitPage() {
                       {ADMIN_STATUS_BADGE[job.status].label}
                     </Badge>
                   </TableCell>
+                  <TableCell className="text-sm whitespace-nowrap text-muted-foreground">{formatDate(job.created_at)}</TableCell>
+                  <TableCell className="text-sm whitespace-nowrap text-muted-foreground">{formatDate(job.updated_at)}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
                       <button
@@ -402,20 +458,38 @@ export default function AdminRecruitPage() {
                         <Pencil className="size-[14px]" />
                         수정
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(job)}
-                        className="rounded border border-[#ffccd4] bg-[#fff7f9] px-3 py-[5px] text-[13px] font-medium text-[#db3947]"
-                      >
-                        삭제
-                      </button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger
+                          render={
+                            <button
+                              type="button"
+                              aria-label="상태·삭제 메뉴"
+                              className="flex size-8 items-center justify-center rounded border border-[#d9dbde] bg-white text-[#6e6e6e]"
+                            />
+                          }
+                        >
+                          <MoreHorizontal className="size-[16px]" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleQuickStatus(job, "open")}>
+                            공개
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleQuickStatus(job, "draft")}>
+                            비공개
+                          </DropdownMenuItem>
+                          <DropdownMenuItem variant="destructive" onClick={() => handleDelete(job)}>
+                            <Trash2 />
+                            삭제
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </TableCell>
                 </TableRow>
               ))}
               {jobs.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-base text-muted-foreground">
+                  <TableCell colSpan={6} className="text-center text-base text-muted-foreground">
                     등록된 공고가 없습니다.
                   </TableCell>
                 </TableRow>
