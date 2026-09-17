@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Briefcase, GraduationCap, Handshake, LayoutGrid, PanelLeftIcon } from "lucide-react";
+import { Briefcase, GraduationCap, Handshake, LayoutGrid, PanelLeftIcon, Target } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -39,6 +39,7 @@ const NAV_ITEMS = [
   { title: "직군", url: "/admin/recruit/job-groups", icon: LayoutGrid },
   { title: "경력사항", url: "/admin/recruit/careers", icon: GraduationCap },
   { title: "고용형태", url: "/admin/recruit/employment-types", icon: Handshake },
+  { title: "지원 직무", url: "/admin/recruit/desired-positions", icon: Target },
 ];
 
 function SidebarHeaderTrigger() {

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import FooterBanner from "@/components/sections/recruit/FooterBanner";
 import { getJobBySlug } from "@/lib/jobs";
+import { RichTextContent } from "@/components/rich-text-content";
 
 /**
  * 채용 공고 상세 — 실서버(careers.letsur.ai/recruit/[slug]) HTML/CSS 대조(2026-09-11).
@@ -20,84 +20,93 @@ import { getJobBySlug } from "@/lib/jobs";
  */
 export const revalidate = 0;
 
-export default async function JobDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function JobDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
   const job = await getJobBySlug(slug);
 
   if (!job) notFound();
 
   return (
-    <>
-      <section className="flex w-full justify-center bg-white px-xl py-[60px] lg:py-[100px]">
-        <div className="flex w-full max-w-[1216px] flex-col gap-[40px] lg:flex-row lg:items-start lg:gap-[80px]">
-          {/* 본문 */}
-          <div className="order-2 min-w-0 flex-1 lg:order-1">
-            <p className="mb-[16px] text-sm lg:hidden">
-              <Link href="/recruit" className="text-[#6e6e6e] underline">
-                ← 채용공고 목록으로
-              </Link>
-            </p>
-            <div
-              className="career-post [&_a]:text-[#111111] [&_a]:underline [&_h3]:mb-[6px] [&_h3]:text-[24px] [&_h3]:leading-[1.3] [&_h3]:font-semibold [&_h3]:text-[#111111] [&_h4]:mb-[6px] [&_h4]:text-[18px] [&_h4]:leading-[1.5] [&_h4]:font-semibold [&_h4]:text-[#111111] [&_iframe]:h-full [&_iframe]:w-full [&_li]:mb-[4px] [&_ol]:mb-[16px] [&_ol]:list-decimal [&_ol]:pl-[20px] [&_ol]:text-[16px] [&_ol]:leading-[1.6] [&_ol]:text-[#333333] [&_p]:mb-[16px] [&_p]:text-[16px] [&_p]:leading-[1.7] [&_p]:text-[#333333] [&_strong]:font-bold [&_ul]:mb-[16px] [&_ul]:list-disc [&_ul]:pl-[20px] [&_ul]:text-[16px] [&_ul]:leading-[1.6] [&_ul]:text-[#333333] [&_ul_ul]:mt-[4px]"
-            >
-              <h1 className="mb-[16px] text-[26px] leading-[1.4] font-semibold text-[#111111] lg:mb-[24px] lg:text-[36px]">
-                {job.title}
-              </h1>
-              {job.descriptionHtml ? (
-                <div
-                  className="[&_figure]:relative [&_figure]:mb-[16px] [&_figure]:aspect-video [&_figure]:overflow-hidden [&_figure]:rounded-[8px]"
-                  dangerouslySetInnerHTML={{ __html: job.descriptionHtml }}
-                />
-              ) : (
-                <p className="text-[16px] leading-[1.7] text-[#6e6e6e]">상세 내용이 아직 등록되지 않았습니다.</p>
-              )}
-            </div>
-          </div>
-
-          {/* 정보 카드 */}
-          <div className="order-1 w-full shrink-0 lg:sticky lg:top-[120px] lg:order-2 lg:w-[356px]">
-            <div className="flex flex-col">
-              <div className="flex items-center justify-between border-t border-[#e1e1e1] py-[24px] first:border-t-0">
-                <span className="min-w-[104px] text-base font-semibold text-[#888888]">직군</span>
-                <span className="text-base text-[#333333]">{job.group}</span>
-              </div>
-              <div className="flex items-center justify-between border-t border-[#e1e1e1] py-[24px]">
-                <span className="min-w-[104px] text-base font-semibold text-[#888888]">경력사항</span>
-                <span className="text-base text-[#333333]">{job.career}</span>
-              </div>
-              <div className="flex items-center justify-between border-t border-[#e1e1e1] py-[24px]">
-                <span className="min-w-[104px] text-base font-semibold text-[#888888]">고용형태</span>
-                <span className="text-base text-[#333333]">{job.type}</span>
-              </div>
-              {job.location && (
-                <div className="flex items-center justify-between border-t border-b border-[#e1e1e1] py-[24px]">
-                  <span className="min-w-[104px] text-base font-semibold text-[#888888]">근무지</span>
-                  <span className="text-right text-base text-[#333333]">{job.location}</span>
-                </div>
-              )}
-            </div>
-            {job.applyUrl &&
-              (job.applyUrl.startsWith("/") ? (
-                <Link
-                  href={job.applyUrl}
-                  className="mt-[30px] flex h-[52px] w-full items-center justify-center bg-[#00ab7f] text-lg font-bold text-white"
-                >
-                  지원하기
-                </Link>
-              ) : (
-                <a
-                  href={job.applyUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-[30px] flex h-[52px] w-full items-center justify-center bg-[#00ab7f] text-lg font-bold text-white"
-                >
-                  지원하기
-                </a>
-              ))}
+    <section className="flex w-full justify-center bg-white px-xl pt-[60px] pb-[60px] lg:pb-[100px]">
+      <div className="flex w-full max-w-[1216px] flex-col gap-[40px] lg:flex-row lg:items-start lg:gap-[80px]">
+        {/* 본문 */}
+        <div className="order-2 min-w-0 flex-1 lg:order-1">
+          <p className="mb-[16px] text-sm lg:hidden">
+            <Link href="/recruit" className="text-[#6e6e6e] underline">
+              ← 채용공고 목록으로
+            </Link>
+          </p>
+          <div className="career-post [&_a]:text-[#111111] [&_a]:underline [&_h3]:mt-[32px] [&_h3]:mb-[6px] [&_h3]:text-[24px] [&_h3]:leading-[1.3] [&_h3]:font-semibold [&_h3]:text-[#111111] [&_h4]:mt-[40px] [&_h4]:mb-[6px] [&_h4]:text-[18px] [&_h4]:leading-[1.5] [&_h4]:font-semibold [&_h4]:text-[#111111] [&_iframe]:h-full [&_iframe]:w-full [&_li]:mb-[4px] [&_ol]:mb-[16px] [&_ol]:list-decimal [&_ol]:pl-[20px] [&_ol]:text-[16px] [&_ol]:leading-[1.6] [&_ol]:text-[#333333] [&_p]:mb-[16px] [&_p]:text-[16px] [&_p]:leading-[1.7] [&_p]:text-[#333333] [&_strong]:font-bold [&_ul]:mb-[16px] [&_ul]:list-disc [&_ul]:pl-[20px] [&_ul]:text-[16px] [&_ul]:leading-[1.6] [&_ul]:text-[#333333] [&_ul_ul]:mt-[4px]">
+            <h1 className="mb-[16px] text-[26px] leading-[1.4] font-semibold text-[#111111] lg:mb-[24px] lg:text-[36px]">
+              {job.title}
+            </h1>
+            {job.descriptionHtml ? (
+              <RichTextContent
+                html={job.descriptionHtml}
+                className="[&_figure]:relative [&_figure]:mb-[16px] [&_figure]:aspect-video [&_figure]:overflow-hidden [&_figure]:rounded-[8px] [&_figure]:pb-0! [&_figure>div]:absolute [&_figure>div]:inset-0"
+              />
+            ) : (
+              <p className="text-[16px] leading-[1.7] text-[#6e6e6e]">
+                상세 내용이 아직 등록되지 않았습니다.
+              </p>
+            )}
           </div>
         </div>
-      </section>
-      <FooterBanner />
-    </>
+
+        {/* 정보 카드 */}
+        <div className="order-1 w-full shrink-0 lg:sticky lg:top-[120px] lg:order-2 lg:w-[356px]">
+          <div className="flex flex-col">
+            <div className="flex items-center justify-start border-t border-[#e1e1e1] py-[24px] first:border-t-0">
+              <span className="min-w-[104px] text-base font-semibold text-[#888888]">
+                직군
+              </span>
+              <span className="text-base text-[#333333]">{job.group}</span>
+            </div>
+            <div className="flex items-center justify-start border-t border-[#e1e1e1] py-[24px]">
+              <span className="min-w-[104px] text-base font-semibold text-[#888888]">
+                경력사항
+              </span>
+              <span className="text-base text-[#333333]">{job.career}</span>
+            </div>
+            <div className="flex items-center justify-start border-t border-[#e1e1e1] py-[24px]">
+              <span className="min-w-[104px] text-base font-semibold text-[#888888]">
+                고용형태
+              </span>
+              <span className="text-base text-[#333333]">{job.type}</span>
+            </div>
+            {job.location && (
+              <div className="flex items-center justify-start border-t border-b border-[#e1e1e1] py-[24px]">
+                <span className="min-w-[104px] text-base font-semibold text-[#888888]">
+                  근무지
+                </span>
+                <span className="text-base text-[#333333]">{job.location}</span>
+              </div>
+            )}
+          </div>
+          {job.applyUrl &&
+            (job.applyUrl.startsWith("/") ? (
+              <Link
+                href={job.applyUrl}
+                className="mt-[30px] flex h-[52px] w-full items-center justify-center bg-[#00ab7f] text-lg font-bold text-white"
+              >
+                지원하기
+              </Link>
+            ) : (
+              <a
+                href={job.applyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-[30px] flex h-[52px] w-full items-center justify-center bg-[#00ab7f] text-lg font-bold text-white"
+              >
+                지원하기
+              </a>
+            ))}
+        </div>
+      </div>
+    </section>
   );
 }

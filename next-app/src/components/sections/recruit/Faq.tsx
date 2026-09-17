@@ -25,6 +25,13 @@ import { useState } from "react";
  * 크기만 트랜지션, 내부에 `overflow-hidden` 래퍼)으로 높이를 몰라도 부드럽게 펼쳐지도록 교체.
  * 여백 실측(2026-09-11): 인트로 문단→첫 그룹 라벨 간격 34px(mobile)/60px(lg, 기존 40/45px였음),
  * 그룹↔그룹 간격 42px(mobile)/80px(lg, 기존 40/45px였음) — 둘 다 실서버보다 좁았어서 확대.
+ * ⚠️ 답변 상단 여백 보정(2026-09-17, 모바일 한정): 열렸을 때 질문↔답변 간격이 답변↔구분선 간격보다
+ * 넓어 보이는 문제 발견. 실서버 DOM을 직접 열어 실측한 결과(`.accordian-item-body` 안에
+ * `<div class="spacing-18px">`(실제 렌더 16px) 스페이서 + 답변, `.accordian-item` 자체 padding 30/30),
+ * 실서버는 질문↔답변 16px / 답변↔구분선 30px로 애초에 비대칭 구조 — "균등하게"가 아니라 이 비율이
+ * 맞는 디자인이었음. 모바일(base)에서만 이 구조를 반영: 열렸을 때 버튼 자신의 하단 padding을 0으로
+ * 비우고, 그만큼을 답변 wrapper의 `pt-[16px]`로 대체(닫힘 상태·lg는 기존 그대로 `pb-[30px]` 유지 —
+ * 데스크톱은 이번 변경 대상 아님, 사용자 지정).
  */
 const FAQ_GROUPS = [
   {
@@ -115,7 +122,7 @@ export default function Faq() {
                     <button
                       type="button"
                       onClick={() => setOpenKey(open ? null : key)}
-                      className="flex w-full items-center py-[30px] text-left"
+                      className={`flex w-full items-center pt-[30px] text-left ${open ? "pb-0 lg:pb-[30px]" : "pb-[30px]"}`}
                     >
                       <span className="w-[42px] shrink-0 text-base leading-[1.6] font-medium text-[#888888] lg:text-[20px] lg:leading-[2.1]">
                         Q.
@@ -141,7 +148,7 @@ export default function Faq() {
                       className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
                     >
                       <div className="overflow-hidden">
-                        <div className="flex pb-[30px]">
+                        <div className="flex pt-[16px] pb-[30px] lg:pt-0">
                           <span className="w-[42px] shrink-0" />
                           <p className="whitespace-pre-line text-base leading-[1.5] text-[#6e6e6e]">{item.a}</p>
                         </div>

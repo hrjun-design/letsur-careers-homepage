@@ -12,7 +12,10 @@ export type TalentPoolSubmissionInput = {
   desiredPosition: string;
   notes: string;
   resumeFile: File | null;
+  /** "기타 제출 서류"는 파일 업로드 또는 URL 링크 둘 중 하나로 받는다 — 동시에 둘 다 값이 있으면
+   * 폼에서 선택된 모드(`portfolioMode`)의 값만 넘겨주는 걸 전제로 파일을 우선한다. */
   portfolioFile: File | null;
+  portfolioUrl: string;
 };
 
 async function uploadFile(file: File, prefix: "resume" | "portfolio"): Promise<string> {
@@ -35,6 +38,7 @@ export async function submitTalentPool(input: TalentPoolSubmissionInput): Promis
     desired_position: input.desiredPosition || null,
     resume_path: resumePath,
     portfolio_path: portfolioPath,
+    portfolio_url: portfolioPath ? null : input.portfolioUrl.trim() || null,
     notes: input.notes || null,
   });
 

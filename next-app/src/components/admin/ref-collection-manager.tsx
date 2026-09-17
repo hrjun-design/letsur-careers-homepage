@@ -17,7 +17,13 @@ type RefRow = { id: string; slug: string; name: string; sort_order: number };
 
 const emptyForm = { id: null as string | null, slug: "", name: "", sort_order: "0" };
 
-export function RefCollectionManager({ table, label }: { table: "job_groups" | "careers" | "employment_types"; label: string }) {
+export function RefCollectionManager({
+  table,
+  label,
+}: {
+  table: "job_groups" | "careers" | "employment_types" | "desired_positions";
+  label: string;
+}) {
   const [rows, setRows] = useState<RefRow[]>([]);
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);

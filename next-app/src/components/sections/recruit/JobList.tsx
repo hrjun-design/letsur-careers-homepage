@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
+import { FilterDropdown } from "@/components/ui/filter-dropdown";
 
 /**
  * 실서버(careers.letsur.ai/recruit) HTML/CSS 대조(2026-09-11) — "채용 중인 공고" 섹션.
@@ -37,91 +38,6 @@ const GROUP_OPTIONS = ["Business", "Sales", "AI", "Product"];
 const CAREER_OPTIONS = ["경력 무관", "신입", "경력"];
 const TYPE_OPTIONS = ["정규직", "계약직", "인턴", "병역특례"];
 
-function ChevronIcon({ open }: { open: boolean }) {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
-      fill="none"
-      aria-hidden="true"
-      className={`shrink-0 text-[#999999] transition-transform duration-150 ${open ? "rotate-180" : ""}`}
-    >
-      <path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function FilterDropdown({
-  label,
-  options,
-  value,
-  onChange,
-}: {
-  /** 닫힌 상태·리셋 옵션에 그대로 노출되는 라벨 — 실서버 고정 텍스트라 "(N)" 숫자를 옵션 개수로
-   * 계산하지 않고 문자열 그대로 받는다(실제 옵션 개수와 안 맞는 값도 실서버와 동일하게 재현). */
-  label: string;
-  options: string[];
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const onClickOutside = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    const onEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("mousedown", onClickOutside);
-    document.addEventListener("keydown", onEscape);
-    return () => {
-      document.removeEventListener("mousedown", onClickOutside);
-      document.removeEventListener("keydown", onEscape);
-    };
-  }, []);
-
-  const select = (v: string) => {
-    onChange(v);
-    setOpen(false);
-  };
-
-  return (
-    <div ref={ref} className="relative flex-1 lg:min-w-[192px] lg:flex-none">
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        className="flex h-[44px] w-full items-center justify-between rounded-[6px] border border-[#cccccc] bg-white px-[14px] text-base text-[#111111]"
-      >
-        <span className="text-[#111111]">{value || label}</span>
-        <ChevronIcon open={open} />
-      </button>
-      {open && (
-        <div className="absolute top-full left-0 z-20 mt-[4px] w-full overflow-hidden rounded-[6px] border border-[#cccccc] bg-white shadow-md">
-          <button
-            type="button"
-            onClick={() => select("")}
-            className="block w-full px-[14px] py-[10px] text-left text-base text-[#111111] hover:bg-[#f5f5f5]"
-          >
-            {label}
-          </button>
-          {options.map((opt) => (
-            <button
-              key={opt}
-              type="button"
-              onClick={() => select(opt)}
-              className="block w-full px-[14px] py-[10px] text-left text-base text-[#333333] hover:bg-[#f5f5f5]"
-            >
-              {opt}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
 
 export default function JobList({ jobs }: { jobs: Job[] }) {
   const [search, setSearch] = useState("");
@@ -195,9 +111,9 @@ export default function JobList({ jobs }: { jobs: Job[] }) {
             className="h-[44px] w-full rounded-[6px] border border-[#cccccc] bg-white pr-[15px] pl-[38px] text-base text-[#111111] placeholder:text-[#999999]"
           />
         </div>
-        <FilterDropdown label="직군 (7)" options={GROUP_OPTIONS} value={group} onChange={setGroup} />
-        <FilterDropdown label="경력사항 (2)" options={CAREER_OPTIONS} value={career} onChange={setCareer} />
-        <FilterDropdown label="고용형태 (2)" options={TYPE_OPTIONS} value={type} onChange={setType} />
+        <FilterDropdown label="직군 (7)" options={GROUP_OPTIONS} value={group} onChange={setGroup} className="flex-1 lg:min-w-[192px] lg:flex-none" />
+        <FilterDropdown label="경력사항 (2)" options={CAREER_OPTIONS} value={career} onChange={setCareer} className="flex-1 lg:min-w-[192px] lg:flex-none" />
+        <FilterDropdown label="고용형태 (2)" options={TYPE_OPTIONS} value={type} onChange={setType} className="flex-1 lg:min-w-[192px] lg:flex-none" />
       </div>
 
       <div className="mt-[10px] flex w-full max-w-[1216px] flex-col lg:border-t-0 lg:pt-0">
