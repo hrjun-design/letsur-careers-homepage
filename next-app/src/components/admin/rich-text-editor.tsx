@@ -80,14 +80,24 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
         <ToolbarButton
           label="소제목 (큰)"
           active={editor.isActive("heading", { level: 2 })}
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          onClick={() => {
+            const chain = editor.chain().focus();
+            editor.isActive("heading", { level: 2 })
+              ? chain.setParagraph().run()
+              : chain.setHeading({ level: 2 }).run();
+          }}
         >
           <Heading2 className="size-4" />
         </ToolbarButton>
         <ToolbarButton
           label="소제목 (작은)"
           active={editor.isActive("heading", { level: 3 })}
-          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+          onClick={() => {
+            const chain = editor.chain().focus();
+            editor.isActive("heading", { level: 3 })
+              ? chain.setParagraph().run()
+              : chain.setHeading({ level: 3 }).run();
+          }}
         >
           <Heading3 className="size-4" />
         </ToolbarButton>

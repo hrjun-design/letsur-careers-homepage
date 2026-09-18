@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 
 /**
  * 헤더 우측 프로필 아이콘 + 드롭다운(2026-09-14, 사용자 제시 레퍼런스 — 렛서 AI 게이트웨이
@@ -148,8 +149,8 @@ export function UserMenu({ user, className }: { user?: User; className?: string 
           <DialogHeader>
             <DialogTitle>계정 설정</DialogTitle>
           </DialogHeader>
-          <div className="flex flex-col gap-3 py-2">
-            <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-3">
               <Label htmlFor="full-name">이름</Label>
               <Input
                 id="full-name"
@@ -158,21 +159,19 @@ export function UserMenu({ user, className }: { user?: User; className?: string 
                 onChange={(e) => setFullName(e.target.value)}
               />
             </div>
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-3">
               <Label htmlFor="new-password">새 비밀번호 (변경 시에만 입력)</Label>
-              <Input
+              <PasswordInput
                 id="new-password"
-                type="password"
                 autoComplete="new-password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
               />
             </div>
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-3">
               <Label htmlFor="confirm-password">새 비밀번호 확인</Label>
-              <Input
+              <PasswordInput
                 id="confirm-password"
-                type="password"
                 autoComplete="new-password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}

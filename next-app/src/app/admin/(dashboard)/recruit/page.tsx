@@ -6,7 +6,6 @@ import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -16,6 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 /**
  * 채용 공고 관리자 화면(2026-09-11 shadcn 대시보드 셸로 재구성) — 인증 가드는
@@ -74,19 +74,8 @@ const emptyForm = {
   status: "draft" as JobRow["status"],
 };
 
-// 2026-09-14 — 피그마 반영: "상태" 배지를 라이브 여부와 무관하게 항상 표시.
-// open(라이브 중)은 "완료"(민트) — 백오피스 작업이 끝났다는 의미, draft/closed는 동일한
-// 뉴트럴 톤으로 "초안"/"마감" 표시.
-const ADMIN_STATUS_BADGE: Record<JobRow["status"], { label: string; className: string }> = {
-  draft: { label: "작성 중", className: "bg-[#fafafa] border-[#d9dbde] text-[#6e6e6e]" },
-  closed: { label: "채용 마감", className: "bg-[#fafafa] border-[#d9dbde] text-[#6e6e6e]" },
-  open: { label: "작성 완료", className: "bg-[#f6fef9] border-[#87ebbe] text-[#00ab7f]" },
-};
-
-// 2026-09-14 — 목록에서 "공개 여부(실제 라이브 중인지)"와 "백오피스 내부 상태(왜 라이브가
-// 아닌지: 초안 작성 중 vs 마감됨)"를 별도 열로 나란히 배치해 구분(사용자가 슈퍼베이스 대시보드의
-// Published/Status 2열 구조를 레퍼런스로 제시). open일 때만 "공개 여부"가 라이브고, 나머지
-// 상세 사유(초안/마감)는 "라이브가 아닐 때"만 오른쪽 열에 표시.
+// 2026-09-18 — "공개 여부"와 별도 "상태" 배지를 나란히 두는 2열 구조가 헷갈린다는 피드백으로
+// "상태" 열 제거, "공개 여부"만 유지(2026-09-14 도입한 2열 구조는 폐기).
 const IS_LIVE = (status: JobRow["status"]) => status === "open";
 
 // Base UI Select는 items 맵을 넘기지 않으면 트리거에 라벨 대신 원시 value(여기선 UUID)를
@@ -99,6 +88,7 @@ const STATUS_ITEMS: Record<JobRow["status"], string> = {
 
 export default function AdminRecruitPage() {
   const [jobs, setJobs] = useState<JobRow[]>([]);
+  const [jobsLoading, setJobsLoading] = useState(true);
   const [groups, setGroups] = useState<RefOption[]>([]);
   const [careers, setCareers] = useState<RefOption[]>([]);
   const [types, setTypes] = useState<RefOption[]>([]);
@@ -106,6 +96,7 @@ export default function AdminRecruitPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formOpen, setFormOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<JobRow | null>(null);
 
   const groupItems = Object.fromEntries(groups.map((o) => [o.id, o.name]));
   const careerItems = Object.fromEntries(careers.map((o) => [o.id, o.name]));
@@ -127,6 +118,7 @@ export default function AdminRecruitPage() {
       .from("jobs")
       .select("*, job_groups(name), careers(name), employment_types(name)")
       .order("created_at", { ascending: false });
+    setJobsLoading(false);
     if (error) {
       setError(error.message);
       return;
@@ -207,9 +199,9 @@ export default function AdminRecruitPage() {
     setFormOpen(true);
   };
 
-  const handleDelete = async (job: JobRow) => {
-    if (!confirm(`"${job.title}" 공고를 삭제할까요? 되돌릴 수 없습니다.`)) return;
-    const { error } = await supabase.from("jobs").delete().eq("id", job.id);
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    const { error } = await supabase.from("jobs").delete().eq("id", deleteTarget.id);
     if (error) {
       setError(error.message);
       return;
@@ -409,7 +401,6 @@ export default function AdminRecruitPage() {
           <TableRow>
             <TableHead className="h-[40px] bg-[#f9f9f9]">제목</TableHead>
             <TableHead className="h-[40px] w-[168px] bg-[#f9f9f9]">공개 여부</TableHead>
-            <TableHead className="h-[40px] w-[168px] bg-[#f9f9f9]">상태</TableHead>
             <TableHead className="h-[40px] w-[150px] bg-[#f9f9f9]">생성 날짜</TableHead>
             <TableHead className="h-[40px] w-[150px] bg-[#f9f9f9]">수정 날짜</TableHead>
             <TableHead className="h-[40px] w-[168px] bg-[#f9f9f9] text-right">작업</TableHead>
@@ -438,14 +429,6 @@ export default function AdminRecruitPage() {
                       {IS_LIVE(job.status) ? "공개" : "비공개"}
                     </span>
                   </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant="outline"
-                      className={`h-[29px] rounded px-3 py-[5px] text-[13px] font-medium ${ADMIN_STATUS_BADGE[job.status].className}`}
-                    >
-                      {ADMIN_STATUS_BADGE[job.status].label}
-                    </Badge>
-                  </TableCell>
                   <TableCell className="text-sm whitespace-nowrap text-muted-foreground">{formatDate(job.created_at)}</TableCell>
                   <TableCell className="text-sm whitespace-nowrap text-muted-foreground">{formatDate(job.updated_at)}</TableCell>
                   <TableCell className="text-right">
@@ -453,7 +436,7 @@ export default function AdminRecruitPage() {
                       <button
                         type="button"
                         onClick={() => handleEdit(job)}
-                        className="flex items-center gap-0.5 rounded border border-[#d9dbde] bg-white px-2.5 py-[5px] text-[13px] font-medium text-[#6e6e6e]"
+                        className="flex items-center gap-0.5 rounded border border-[#d9dbde] bg-white px-2.5 py-[5px] text-[13px] font-medium text-[#6e6e6e] hover:bg-[#f5f5f5]"
                       >
                         <Pencil className="size-[14px]" />
                         수정
@@ -464,7 +447,7 @@ export default function AdminRecruitPage() {
                             <button
                               type="button"
                               aria-label="상태·삭제 메뉴"
-                              className="flex size-8 items-center justify-center rounded border border-[#d9dbde] bg-white text-[#6e6e6e]"
+                              className="flex size-8 items-center justify-center rounded border border-[#d9dbde] bg-white text-[#6e6e6e] hover:bg-[#f5f5f5]"
                             />
                           }
                         >
@@ -477,7 +460,7 @@ export default function AdminRecruitPage() {
                           <DropdownMenuItem onClick={() => handleQuickStatus(job, "draft")}>
                             비공개
                           </DropdownMenuItem>
-                          <DropdownMenuItem variant="destructive" onClick={() => handleDelete(job)}>
+                          <DropdownMenuItem variant="destructive" onClick={() => setDeleteTarget(job)}>
                             <Trash2 />
                             삭제
                           </DropdownMenuItem>
@@ -487,15 +470,23 @@ export default function AdminRecruitPage() {
                   </TableCell>
                 </TableRow>
               ))}
-              {jobs.length === 0 && (
+              {!jobsLoading && jobs.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-base text-muted-foreground">
+                  <TableCell colSpan={5} className="text-center text-base text-muted-foreground">
                     등록된 공고가 없습니다.
                   </TableCell>
                 </TableRow>
               )}
         </TableBody>
       </Table>
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title="공고 삭제"
+        description={deleteTarget ? `"${deleteTarget.title}" 공고를 삭제할까요? 되돌릴 수 없습니다.` : ""}
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 }

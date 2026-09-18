@@ -39,7 +39,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <AppSidebar />
       <SidebarInset>
         <header className="flex h-14 shrink-0 items-center gap-2 border-b border-[#e1e1e1] px-4">
-          <span className="text-base font-medium text-[#111111]">채용 공고 관리</span>
+          <span className="text-base font-medium text-[#111111]">렛서 채용 관리</span>
           <UserMenu user={session?.user} className="ml-auto" />
         </header>
         <div className="flex flex-1 flex-col gap-4 p-10">{children}</div>
