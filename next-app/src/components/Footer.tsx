@@ -9,9 +9,8 @@
  * 도메인이 아직 확정 전이라(`letsur.ai` vs 임시 Vercel 링크) 우선 `letsur.ai` 기준으로 넣어두고,
  * 확정되면 재확인 필요.
  *
- * ⚠️ 고객문의 이메일: Figma 마스터 노드 원문은 "letsur@letsur.ai"인데, 메인 홈페이지 실제 코드는
- * "customer.service@letsur.ai"를 씀 — 둘이 다름. 여기서는 메인 홈페이지 실제 코드값을 따랐다
- * (실서비스에 실제 쓰이는 주소일 가능성이 높다고 판단). 확인 필요.
+ * 이메일: 채용 사이트라 메인 홈페이지의 "고객문의: customer.service@letsur.ai" 대신 라벨 없이
+ * 채용 문의 주소 "recruit@letsur.ai"만 표기(2026-10-14 수정 요청 반영).
  */
 function Divider() {
   return <span className="h-[12px] w-px bg-[#c6c6c6]" aria-hidden="true" />;
@@ -85,7 +84,7 @@ export default function Footer() {
               </span>
               <span className="text-sm leading-5 font-normal text-[#e1e1e1]">사업자등록번호: 146-87-02023</span>
               <span className="text-sm leading-5 font-normal text-[#e1e1e1]">대표이사: 심규현</span>
-              <span className="text-sm leading-5 font-normal text-[#e1e1e1]">고객문의: customer.service@letsur.ai</span>
+              <span className="text-sm leading-5 font-normal text-[#e1e1e1]">recruit@letsur.ai</span>
             </div>
 
             <div className="hidden flex-wrap items-center gap-[10px] lg:flex">
@@ -98,7 +97,7 @@ export default function Footer() {
               <Divider />
               <span className="text-sm leading-5 font-normal text-[#e1e1e1]">대표이사: 심규현</span>
               <Divider />
-              <span className="text-sm leading-5 font-normal text-[#e1e1e1]">고객문의: customer.service@letsur.ai</span>
+              <span className="text-sm leading-5 font-normal text-[#e1e1e1]">recruit@letsur.ai</span>
             </div>
           </div>
 

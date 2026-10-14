@@ -10,7 +10,7 @@ const SERVICES = [
     titleRest: "은 AI 도입, 활용, 운영까지,",
     titleLine2: "하나의 시스템으로 통합 관리하는 플랫폼입니다.",
     desc: "AI 도입 이후 지속되기 위해서는 운영 안정성과 체계적인 유지관리 시스템이 뒷받침되어야 합니다. 렛서 플랫폼은 AI 도입 이후의 '운영 안정성'을 책임지는 렛서의 AI 운영관리 플랫폼입니다. 복잡한 대규모 AI 모델을 안전하게 배포하고, 지속적으로 최적의 성능을 유지합니다.",
-    href: "https://letsur.ai/kr/ai-gateway",
+    href: "https://docs.platform.letsur.ai/platform", // 2026-10-14 수정 요청 (기존 letsur.ai/kr/ai-gateway)
     external: true,
   },
   {
