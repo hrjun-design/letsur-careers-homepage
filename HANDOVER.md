@@ -118,7 +118,7 @@ git push origin main     # 회사 저장소 최신 유지
   - Vercel: 조직 소유 비공개 저장소는 Hobby(무료)로 연결할 수 없습니다 → 회사 팀 **Pro**
   - Supabase: Free는 **7일 동안 사용이 없으면 자동 정지**되어 사이트·관리자가 멈춥니다(2026-10-14 실제 발생) → 운영용 **Pro** 권장
 - [ ] **GitHub:** 회사 저장소 접근 권한 확인 (Vercel 연결 시 이 저장소를 선택해야 함)
-- [ ] **Supabase:** 회사 조직 생성 → 전혜림을 **Owner**로 초대 (양쪽 조직 모두 Owner여야 이전 버튼이 보입니다)
+- [ ] **Supabase:** 회사 조직 생성 → 전혜림을 **Owner**로 초대 (양쪽 조직 모두 Owner여야 이전 버튼이 보입니다. **이전용 임시 권한**이며 2단계 후 전혜림은 탈퇴)
 - [ ] **Vercel:** 회사 팀 생성(Pro)
 
 ### 1단계: GitHub · 완료
@@ -128,7 +128,7 @@ git push origin main     # 회사 저장소 최신 유지
 ### 2단계: Supabase 이전 · 전혜림
 - [ ] 프로젝트 → Project Settings → General → **Transfer project** → 회사 조직 선택
 - URL과 키가 그대로라 사이트가 끊기지 않고, 코드·환경변수도 수정할 필요가 없습니다.
-- [ ] 이전 확인 후 전혜림 Owner 권한 정리 (필요하면 유지)
+- [ ] 이전 확인 후 전혜림은 회사 조직에서 **탈퇴**(Organization settings → Team → Leave). 이후 관리는 태희님 조직에서
 
 ### 3단계: Vercel 새로 연결 · 태희님
 Vercel에는 옮길 데이터가 없으므로(데이터는 전부 Supabase에 있음) 프로젝트를 이전하기보다 **회사 팀에서 새로 Import**하는 편이 간단합니다.
