@@ -6,7 +6,7 @@
 Webflow(`careers.letsur.ai`)로 운영하던 렛서 채용 사이트를 **Next.js + Vercel + Supabase**로 옮긴 프로젝트입니다.
 메인 렛서 홈페이지(`letsur-homepage-3.0`)와는 완전히 별개의 사이트예요. 메인 홈페이지 GNB의 "채용"은 이 사이트로 나가는 외부 링크입니다.
 
-현재는 QA 단계라 **모든 서비스가 전혜림 개인 계정에** 있습니다. 아래 [이관 체크리스트](#4-이관-체크리스트)대로 회사 공간으로 옮기면 됩니다.
+코드는 회사 저장소(`letsur-dev`)에 최신본이 올라가 있지만, **배포(Vercel)와 DB(Supabase)는 아직 전혜림 개인 계정**에 있습니다. 아래 [이관 체크리스트](#4-이관-체크리스트)대로 회사 공간으로 옮기면 됩니다.
 
 ---
 
@@ -17,8 +17,9 @@ Webflow(`careers.letsur.ai`)로 운영하던 렛서 채용 사이트를 **Next.j
 | 사이트 (임시 배포) | https://letsur-careers-homepage-two.vercel.app |
 | 관리자 | https://letsur-careers-homepage-two.vercel.app/admin/login |
 | 최종 도메인 (이관 후 연결) | https://careers.letsur.ai (현재는 Webflow를 가리킴) |
-| GitHub | https://github.com/hrjun-design/letsur-careers-homepage (개인) |
-| Vercel | 전혜림 개인 Hobby 계정 · `personal/main` push 시 자동 배포 |
+| GitHub (회사, 기준 저장소) | https://github.com/letsur-dev/letsur-careers-homepage |
+| GitHub (개인, 현재 배포 연결용) | https://github.com/hrjun-design/letsur-careers-homepage · 이관 후 삭제 예정 |
+| Vercel | 전혜림 개인 Hobby 계정 · **개인 저장소** `main` push 시 자동 배포 |
 | Supabase | `hrjun-design's Project` (ref `vaadjvcbchortgpeobxk`, 리전 ap-southeast-2 시드니, Free 플랜) |
 
 ## 2. 사이트 구성
@@ -101,20 +102,28 @@ npm run dev   # http://localhost:3002
 
 ## 4. 이관 체크리스트
 
-계정을 넘기는 게 아니라 각 서비스의 **이전(Transfer) 기능으로 프로젝트만 회사 공간으로 옮기는** 방식입니다.
-이전 버튼은 보내는 쪽(전혜림)이 누르고, 받는 쪽 공간에 들어갈 권한이 있어야 하므로 **태희님이 회사 공간을 준비하고 전혜림을 초대**하는 것이 먼저입니다.
+계정을 넘기는 게 아니라 **프로젝트만 회사 공간으로 옮기는** 방식입니다.
+- **코드(GitHub):** 회사 저장소 `letsur-dev/letsur-careers-homepage`에 최신본이 이미 올라가 있습니다(2026-10-14). 앞으로는 회사 저장소가 기준입니다.
+- **DB(Supabase):** 이전(Transfer) 기능으로 회사 조직에 옮깁니다. 이전 버튼은 보내는 쪽(전혜림)이 누르므로, **태희님이 회사 조직을 만들고 전혜림을 초대**하는 것이 먼저입니다.
+- **배포(Vercel):** 옮길 데이터가 없으므로 회사 팀에서 회사 저장소를 새로 연결합니다.
+
+⚠️ **이관 전까지는 두 저장소 모두에 push하세요.** 지금 사이트는 개인 저장소에 연결돼 있어서, 회사 저장소에만 push하면 사이트에 반영되지 않습니다.
+```bash
+git push personal main   # 사이트 반영 (현재 Vercel 연결)
+git push origin main     # 회사 저장소 최신 유지
+```
 
 ### 0단계: 회사 공간 준비 · 태희님
 - [ ] **요금제 결정**
   - Vercel: 조직 소유 비공개 저장소는 Hobby(무료)로 연결할 수 없습니다 → 회사 팀 **Pro**
   - Supabase: Free는 **7일 동안 사용이 없으면 자동 정지**되어 사이트·관리자가 멈춥니다(2026-10-14 실제 발생) → 운영용 **Pro** 권장
-- [ ] **GitHub:** `letsur-dev` 조직에서 전혜림에게 저장소 생성 권한이 있는지 확인
+- [ ] **GitHub:** 회사 저장소 접근 권한 확인 (Vercel 연결 시 이 저장소를 선택해야 함)
 - [ ] **Supabase:** 회사 조직 생성 → 전혜림을 **Owner**로 초대 (양쪽 조직 모두 Owner여야 이전 버튼이 보입니다)
 - [ ] **Vercel:** 회사 팀 생성(Pro)
 
-### 1단계: GitHub 이전 · 전혜림
-- [ ] 저장소 `hrjun-design/letsur-careers-homepage` → Settings → Danger Zone → **Transfer** → `letsur-dev`
-- ⚠️ 이 시점부터 3단계가 끝날 때까지 **현재 Vercel 주소는 자동 배포되지 않습니다.** 사이트는 그대로 떠 있지만 수정 반영이 멈추므로 이 기간에는 코드 수정을 하지 않습니다.
+### 1단계: GitHub · 완료
+- [x] 회사 저장소 `letsur-dev/letsur-careers-homepage`에 최신본 push (2026-10-14, 커밋 이력 그대로 유지)
+- 개인 저장소는 3단계(Vercel 새로 연결)가 끝날 때까지 배포용으로 유지합니다. 그 전에 지우면 사이트 수정 반영이 멈춥니다.
 
 ### 2단계: Supabase 이전 · 전혜림
 - [ ] 프로젝트 → Project Settings → General → **Transfer project** → 회사 조직 선택
@@ -128,7 +137,7 @@ Vercel에는 옮길 데이터가 없으므로(데이터는 전부 Supabase에 �
 - [ ] 환경변수 입력: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (값은 Supabase → Project Settings → API, 또는 전혜림에게 전달받기)
 - [ ] 배포된 새 주소에서 QA: 공고 목록·상세·인재풀 제출·관리자 로그인과 각 메뉴
   - 네이버 지도는 NCP에 등록된 도메인(현재 Vercel 임시 주소·`careers.letsur.ai`)에서만 뜹니다. 새 Vercel 주소에서는 지도가 안 보이는 게 정상이고, 도메인 연결 후 확인합니다.
-- [ ] 확인되면 전혜림이 개인 Vercel 프로젝트 삭제
+- [ ] 확인되면 전혜림이 개인 Vercel 프로젝트 삭제 → 이후 push는 회사 저장소(`origin`)만
 
 ### 4단계: 도메인 전환 · 태희님
 - [ ] 새 Vercel 프로젝트 → Settings → Domains → `careers.letsur.ai` 추가 → 안내되는 DNS 레코드로 변경 (현재 Webflow를 가리킴)
@@ -139,7 +148,7 @@ Vercel에는 옮길 데이터가 없으므로(데이터는 전부 Supabase에 �
 
 ### 5단계: 정리
 - [ ] 관리자 계정: 전혜림 계정 유지 여부 결정 (Supabase → Authentication → Users)
-- [ ] 로컬 git remote 정리: `personal`(개인 저장소) 제거, `origin`(`letsur-dev`)으로 push
+- [ ] 개인 저장소 `hrjun-design/letsur-careers-homepage` 삭제, 로컬 git remote에서 `personal` 제거
 
 ## 5. 남은 작업
 
