@@ -58,7 +58,8 @@ export async function getOpenJobs(): Promise<JobSummary[]> {
     .select(JOB_SELECT)
     .eq("status", "open")
     .order("is_pinned", { ascending: false })
-    .order("display_date", { ascending: false });
+    // 2026-10-14 — 게시일 대신 관리자에서 드래그로 정한 순서(sort_order) 사용
+    .order("sort_order", { ascending: true });
 
   if (error) {
     console.error("Failed to load jobs:", error.message);

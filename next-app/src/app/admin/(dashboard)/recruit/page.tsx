@@ -1,7 +1,25 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
+import { ArrowUpDown, GripVertical, MoreHorizontal, Pencil, Pin, Plus, Trash2 } from "lucide-react";
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +34,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 /**
  * 채용 공고 관리자 화면(2026-09-11 shadcn 대시보드 셸로 재구성) — 인증 가드는
@@ -28,6 +47,13 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
  * 슈퍼베이스 대시보드 레퍼런스(목록 → 상세 화면이 같은 영역 안에서 전환, 상단에 "< Tables" 같은
  * 뒤로가기 링크만 표시)를 보고 반려 — Dialog를 걷어내고 목록/폼을 같은 카드 영역 안에서
  * `formOpen` 상태로 토글하는 방식으로 변경. 폼 진입 시 상단에 목록으로 돌아가는 링크만 노출.
+ *
+ * 표시 순서 — 2026-10-14, 소현님 요청으로 드래그 정렬 추가. 목록 순서 = 공개 목록(`/recruit`) 순서
+ * (고정 공고 우선 → sort_order). 실수로 끌어도 바로 반영되지 않게 "순서 편집" 모드에서만 손잡이(⋮⋮)가
+ * 보이고, 끌어둔 순서는 화면에만 쌓였다가 "순서 저장" 시 `reorder_jobs` RPC로 한 번에 저장(취소 시 폐기).
+ * 편집 중엔 수정·⋯·새 공고 등록을 숨겨 다른 작업과 섞이지 않게 함.
+ * 고정(is_pinned) 공고는 공개 목록에서 항상 위라 드래그 비활성 + 손잡이 대신 고정 아이콘 표시(끌었다가
+ * 제자리로 튕겨 고장처럼 보였던 피드백 반영), 일반 공고를 고정 공고 자리로 놓는 드래그도 무시한다.
  */
 type RefOption = { id: string; name: string };
 
@@ -43,6 +69,8 @@ type JobRow = {
   description_html: string | null;
   display_date: string | null;
   status: "draft" | "open" | "closed";
+  is_pinned: boolean;
+  sort_order: number;
   created_at: string;
   updated_at: string;
   job_groups: { name: string } | null;
@@ -97,6 +125,9 @@ export default function AdminRecruitPage() {
   const [error, setError] = useState<string | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<JobRow | null>(null);
+  // 순서 편집 모드 — null이면 일반 모드, 배열이면 편집 중인 임시 순서
+  const [orderDraft, setOrderDraft] = useState<JobRow[] | null>(null);
+  const [orderSaving, setOrderSaving] = useState(false);
 
   const groupItems = Object.fromEntries(groups.map((o) => [o.id, o.name]));
   const careerItems = Object.fromEntries(careers.map((o) => [o.id, o.name]));
@@ -117,7 +148,8 @@ export default function AdminRecruitPage() {
     const { data, error } = await supabase
       .from("jobs")
       .select("*, job_groups(name), careers(name), employment_types(name)")
-      .order("created_at", { ascending: false });
+      .order("is_pinned", { ascending: false })
+      .order("sort_order", { ascending: true });
     setJobsLoading(false);
     if (error) {
       setError(error.message);
@@ -156,9 +188,11 @@ export default function AdminRecruitPage() {
       updated_at: new Date().toISOString(),
     };
 
+    // 새 공고는 일반 공고 맨 위(고정 공고 바로 아래)로
+    const topOrder = Math.min(0, ...jobs.filter((j) => !j.is_pinned).map((j) => j.sort_order));
     const result = form.id
       ? await supabase.from("jobs").update(payload).eq("id", form.id)
-      : await supabase.from("jobs").insert(payload);
+      : await supabase.from("jobs").insert({ ...payload, sort_order: topOrder - 1 });
 
     setSaving(false);
     if (result.error) {
@@ -222,6 +256,37 @@ export default function AdminRecruitPage() {
       setError(error.message);
       return;
     }
+    loadJobs();
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+
+  const editingOrder = orderDraft !== null;
+  const rows = orderDraft ?? jobs;
+  const orderChanged = !!orderDraft && orderDraft.some((j, i) => j.id !== jobs[i]?.id);
+
+  const handleDragEnd = ({ active, over }: DragEndEvent) => {
+    if (!orderDraft || !over || active.id === over.id) return;
+    const from = orderDraft.findIndex((j) => j.id === active.id);
+    const to = orderDraft.findIndex((j) => j.id === over.id);
+    if (from < 0 || to < 0 || orderDraft[from].is_pinned !== orderDraft[to].is_pinned) return;
+    setOrderDraft(arrayMove(orderDraft, from, to));
+  };
+
+  const saveOrder = async () => {
+    if (!orderDraft) return;
+    setOrderSaving(true);
+    const { error } = await supabase.rpc("reorder_jobs", { ids: orderDraft.map((j) => j.id) });
+    setOrderSaving(false);
+    if (error) {
+      setError(`순서 저장 실패: ${error.message}`);
+      return;
+    }
+    setError(null);
+    setOrderDraft(null);
     loadJobs();
   };
 
@@ -386,19 +451,58 @@ export default function AdminRecruitPage() {
       {error && <p className="rounded-md bg-red-50 px-4 py-2 text-base text-red-600">{error}</p>}
 
       <div className="flex flex-row items-center justify-between">
-        <span className="text-lg font-semibold text-[#0a0a0a]">전체 공고 ({jobs.length})</span>
-        <Button
-          type="button"
-          onClick={handleCreate}
-          className="rounded bg-[#00ab7f] font-semibold text-white hover:bg-[#00ab7f]/90"
-        >
-          <Plus />
-          새 공고 등록
-        </Button>
+        <div className="flex items-center gap-3">
+          <span className="text-lg font-semibold text-[#0a0a0a]">전체 공고 ({jobs.length})</span>
+          {editingOrder && (
+            <span className="text-sm text-muted-foreground">⋮⋮ 손잡이를 끌어 순서를 바꾼 뒤 저장하세요</span>
+          )}
+        </div>
+        {editingOrder ? (
+          <div className="flex gap-2">
+            <Button type="button" variant="outline" onClick={() => setOrderDraft(null)} disabled={orderSaving}>
+              취소
+            </Button>
+            <Button
+              type="button"
+              onClick={saveOrder}
+              disabled={!orderChanged || orderSaving}
+              className="rounded bg-[#00ab7f] font-semibold text-white hover:bg-[#00ab7f]/90"
+            >
+              {orderSaving ? "저장 중..." : "순서 저장"}
+            </Button>
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setOrderDraft(jobs)}
+              disabled={jobs.length < 2}
+            >
+              <ArrowUpDown />
+              순서 편집
+            </Button>
+            <Button
+              type="button"
+              onClick={handleCreate}
+              className="rounded bg-[#00ab7f] font-semibold text-white hover:bg-[#00ab7f]/90"
+            >
+              <Plus />
+              새 공고 등록
+            </Button>
+          </div>
+        )}
       </div>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        modifiers={[restrictToVerticalAxis]}
+        onDragEnd={handleDragEnd}
+      >
       <Table>
         <TableHeader>
           <TableRow>
+            {editingOrder && <TableHead className="h-[40px] w-[40px] bg-[#f9f9f9]" aria-label="순서" />}
             <TableHead className="h-[40px] bg-[#f9f9f9]">제목</TableHead>
             <TableHead className="h-[40px] w-[168px] bg-[#f9f9f9]">공개 여부</TableHead>
             <TableHead className="h-[40px] w-[150px] bg-[#f9f9f9]">생성 날짜</TableHead>
@@ -407,11 +511,12 @@ export default function AdminRecruitPage() {
           </TableRow>
         </TableHeader>
             <TableBody>
-              {jobs.map((job) => (
-                <TableRow key={job.id}>
+              <SortableContext items={rows.map((j) => j.id)} strategy={verticalListSortingStrategy}>
+              {rows.map((job) => (
+                <SortableJobRow key={job.id} id={job.id} pinned={job.is_pinned} editing={editingOrder}>
                   <TableCell
-                    className="cursor-pointer font-medium hover:underline"
-                    onClick={() => handleEdit(job)}
+                    className={editingOrder ? "font-medium" : "cursor-pointer font-medium hover:underline"}
+                    onClick={editingOrder ? undefined : () => handleEdit(job)}
                   >
                     {job.title}
                   </TableCell>
@@ -432,7 +537,7 @@ export default function AdminRecruitPage() {
                   <TableCell className="text-sm whitespace-nowrap text-muted-foreground">{formatDate(job.created_at)}</TableCell>
                   <TableCell className="text-sm whitespace-nowrap text-muted-foreground">{formatDate(job.updated_at)}</TableCell>
                   <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-2">
+                    <div className={`flex items-center justify-end gap-2 ${editingOrder ? "invisible" : ""}`}>
                       <button
                         type="button"
                         onClick={() => handleEdit(job)}
@@ -468,17 +573,19 @@ export default function AdminRecruitPage() {
                       </DropdownMenu>
                     </div>
                   </TableCell>
-                </TableRow>
+                </SortableJobRow>
               ))}
+              </SortableContext>
               {!jobsLoading && jobs.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-base text-muted-foreground">
+                  <TableCell colSpan={editingOrder ? 6 : 5} className="text-center text-base text-muted-foreground">
                     등록된 공고가 없습니다.
                   </TableCell>
                 </TableRow>
               )}
         </TableBody>
       </Table>
+      </DndContext>
 
       <ConfirmDialog
         open={!!deleteTarget}
@@ -488,5 +595,63 @@ export default function AdminRecruitPage() {
         onConfirm={confirmDelete}
       />
     </div>
+  );
+}
+
+/** 드래그 정렬 행 — 순서 편집 모드에서만 손잡이(⋮⋮) 열이 생기고, 손잡이를 잡아야만 끌림 */
+function SortableJobRow({
+  id,
+  pinned,
+  editing,
+  children,
+}: {
+  id: string;
+  pinned: boolean;
+  editing: boolean;
+  children: React.ReactNode;
+}) {
+  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } =
+    useSortable({ id, disabled: pinned || !editing });
+  if (!editing) return <TableRow>{children}</TableRow>;
+  return (
+    <TableRow
+      ref={setNodeRef}
+      style={{ transform: CSS.Translate.toString(transform), transition }}
+      className={isDragging ? "relative z-10 bg-white shadow-md" : undefined}
+    >
+      <TableCell className="w-[40px] pr-0">
+        {pinned ? (
+          // 브라우저 기본 title 툴팁이 잘 안 보인다는 피드백(2026-10-14) — 검은 말풍선+화살표 툴팁으로 교체
+          <Tooltip>
+            <TooltipTrigger
+              delay={0}
+              render={
+                <span
+                  aria-label="고정 공고"
+                  className="flex size-7 items-center justify-center text-[#00ab7f]"
+                />
+              }
+            >
+              <Pin className="size-4" />
+            </TooltipTrigger>
+            <TooltipContent sideOffset={8} className="rounded-lg px-4 py-2.5 text-sm font-medium">
+              고정 공고는 항상 맨 위에 표시돼요
+            </TooltipContent>
+          </Tooltip>
+        ) : (
+        <button
+          type="button"
+          ref={setActivatorNodeRef}
+          {...attributes}
+          {...listeners}
+          aria-label="순서 변경"
+          className="flex size-7 cursor-grab touch-none items-center justify-center rounded text-[#b0b0b0] hover:bg-[#f5f5f5] hover:text-[#6e6e6e] active:cursor-grabbing"
+        >
+          <GripVertical className="size-4" />
+        </button>
+        )}
+      </TableCell>
+      {children}
+    </TableRow>
   );
 }
