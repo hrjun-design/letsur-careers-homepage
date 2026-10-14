@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getJobBySlug } from "@/lib/jobs";
 import { RichTextContent } from "@/components/rich-text-content";
+import { NaverMap } from "@/components/naver-map";
 
 /**
  * 채용 공고 상세 — 실서버(careers.letsur.ai/recruit/[slug]) HTML/CSS 대조(2026-09-11).
@@ -9,8 +10,8 @@ import { RichTextContent } from "@/components/rich-text-content";
  *   근무지, `.career-detail-info`는 `position:sticky`)와 리치텍스트 본문(`.career-detail-contents`)이
  *   나란히 배치. 다만 각 요소의 정확한 grid-area 지정(Webflow가 노드 ID별로 CSS 생성)까진 크롤링으로
  *   못 가져와서, 통상적인 컨벤션(넓은 본문 왼쪽 + 좁은 sticky 정보카드 오른쪽)으로 대체 구현.
- * - 지도(구글맵·네이버맵)는 실서버도 구글맵은 `display:none`으로 숨겨두고 네이버맵만 쓰는데, 네이버맵은
- *   자체 API 키(ncpKeyId)가 필요해 이번엔 생략 — 주소 텍스트만 노출.
+ * - 지도: 실서버도 구글맵은 `display:none`으로 숨기고 네이버맵만 사용 → 근무지 행 바로 아래 네이버맵
+ *   (`NaverMap`, 높이 200px, 클릭 시 네이버 지도 장소 페이지)만 이식(2026-10-14, 인사팀 발급 Client ID).
  * - "지원하기" 버튼(`.text-block-82`, point-green 배경 52px)은 기본적으로 외부 채용 플랫폼(원티드/
  *   그리팅/remember 등)으로 연결. apply_url이 "/"로 시작하면 내부 라우트로 판단해 자체 폼(예: 인재풀
  *   등록 `/recruit/[slug]/apply`)으로 연결(2026-09-15 추가) — apply_url이 없는 공고(초안 단계 등)는
@@ -74,12 +75,15 @@ export default async function JobDetailPage({
               <span className="text-base text-[#333333]">{job.type}</span>
             </div>
             {job.location && (
-              <div className="flex items-center justify-start border-t border-b border-[#e1e1e1] py-[24px]">
-                <span className="min-w-[104px] text-base font-semibold text-[#888888]">
-                  근무지
-                </span>
-                <span className="text-base text-[#333333]">{job.location}</span>
-              </div>
+              <>
+                <div className="flex items-center justify-start border-t border-[#e1e1e1] py-[24px]">
+                  <span className="min-w-[104px] text-base font-semibold text-[#888888]">
+                    근무지
+                  </span>
+                  <span className="text-base text-[#333333]">{job.location}</span>
+                </div>
+                <NaverMap address={job.location} />
+              </>
             )}
           </div>
           {job.applyUrl &&
