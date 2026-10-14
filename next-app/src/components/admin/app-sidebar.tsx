@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Briefcase, GraduationCap, Handshake, LayoutGrid, PanelLeftIcon, Target } from "lucide-react";
+import { Briefcase, GraduationCap, Handshake, LayoutGrid, PanelLeftIcon, Target, UserPlus } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -36,6 +36,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
  */
 const NAV_ITEMS = [
   { title: "채용 공고", url: "/admin/recruit", icon: Briefcase },
+  { title: "인재풀 신청", url: "/admin/talent-pool", icon: UserPlus },
   { title: "직군", url: "/admin/recruit/job-groups", icon: LayoutGrid },
   { title: "경력사항", url: "/admin/recruit/careers", icon: GraduationCap },
   { title: "고용형태", url: "/admin/recruit/employment-types", icon: Handshake },

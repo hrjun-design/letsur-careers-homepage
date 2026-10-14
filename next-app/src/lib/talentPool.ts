@@ -18,8 +18,14 @@ export type TalentPoolSubmissionInput = {
   portfolioUrl: string;
 };
 
+/**
+ * 스토리지 경로는 영문·숫자만 — Supabase Storage 키가 한글 등 비ASCII 문자를 거부해("Invalid key")
+ * 한글 파일명 이력서가 업로드조차 안 되던 버그(2026-10-14 제출 테스트로 발견). 경로는 시각+난수+확장자로
+ * 만들고, 원래 파일명은 `*_name` 컬럼에 따로 저장해 관리자 다운로드 시 그 이름으로 내려준다.
+ */
 async function uploadFile(file: File, prefix: "resume" | "portfolio"): Promise<string> {
-  const path = `${prefix}/${Date.now()}-${file.name}`;
+  const ext = file.name.split(".").pop()?.toLowerCase().replace(/[^a-z0-9]/g, "") || "pdf";
+  const path = `${prefix}/${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`;
   const { error } = await supabase.storage.from("talent-pool-files").upload(path, file);
   if (error) throw new Error(`파일 업로드에 실패했습니다: ${error.message}`);
   return path;
@@ -37,7 +43,9 @@ export async function submitTalentPool(input: TalentPoolSubmissionInput): Promis
     phone: input.phone,
     desired_position: input.desiredPosition || null,
     resume_path: resumePath,
+    resume_name: input.resumeFile?.name ?? null,
     portfolio_path: portfolioPath,
+    portfolio_name: portfolioPath ? input.portfolioFile?.name ?? null : null,
     portfolio_url: portfolioPath ? null : input.portfolioUrl.trim() || null,
     notes: input.notes || null,
   });

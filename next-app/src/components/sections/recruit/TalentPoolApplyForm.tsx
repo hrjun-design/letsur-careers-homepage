@@ -11,8 +11,8 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
  * `stories/06-talent-pool.md` 스펙 기준 구현(테레스 레퍼런스 채택분) — 계정 없는 1회성 폼.
- * ⚠️ 개인정보 수집·이용 동의 문구는 초안입니다 — 스펙 문서에도 명시된 대로 실제 배포 전
- * 렛서 법무/개인정보처리방침 기준으로 검수·수정이 필요합니다.
+ * ⚠️ 개인정보 수집·이용 동의 문구는 초안입니다 — 렛서 법무/개인정보처리방침 기준 검수 필요(태희님께
+ * 이관, 2026-10-14). 외부 지원자에게 보이던 화면상 "초안" 경고 문구만 먼저 제거.
  *
  * UI는 모두싸인 인재풀 등록 페이지(recruit.modusign.co.kr) 참고 — 우측에 섹션 이동 네비게이션(현재
  * 스크롤 위치를 IntersectionObserver로 추적해 활성 표시) + 항상 보이는 제출 버튼을 붙인 2단 레이아웃.
@@ -152,7 +152,15 @@ export default function TalentPoolApplyForm({ positions }: { positions: DesiredP
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   const allConsented = consentRequired && consentOptional && consentThirdParty;
-  const canSubmit = name.trim() && email.trim() && phone.trim() && consentRequired && !submitting;
+  // 필수 항목 누락 시 버튼을 막지 않고, 누른 순간 무엇이 빠졌는지 알려준다 — 이전엔 조용히 return해서
+  // 아무 반응이 없었고, 이력서는 필수(•) 표시인데 검사 자체가 없어 이력서 없이도 제출됐음(2026-10-14)
+  const missing = [
+    !name.trim() && "이름",
+    !email.trim() && "이메일주소",
+    !phone.trim() && "연락처",
+    !resumeFile && "이력서",
+    !consentRequired && "개인정보 필수항목 수집 및 이용 동의",
+  ].filter(Boolean) as string[];
 
   useEffect(() => {
     if (done) return;
@@ -190,7 +198,11 @@ export default function TalentPoolApplyForm({ positions }: { positions: DesiredP
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!canSubmit) return;
+    if (submitting) return;
+    if (missing.length) {
+      setError(`다음 필수 항목을 확인해주세요: ${missing.join(", ")}`);
+      return;
+    }
     setSubmitting(true);
     setError(null);
     try {
@@ -390,9 +402,6 @@ export default function TalentPoolApplyForm({ positions }: { positions: DesiredP
         {/* 개인정보 수집 및 이용 동의 */}
         <div id="consent" className="flex scroll-mt-[100px] flex-col gap-[20px]">
           <h2 className="text-xl font-semibold text-[#111111]">개인정보 수집 및 이용 동의</h2>
-          <p className="text-sm font-semibold text-[#e0433c]">
-            ⚠️ 아래 문구는 초안입니다 — 실제 배포 전 렛서 개인정보처리방침 기준으로 검수가 필요합니다.
-          </p>
 
           <label className="flex items-center gap-[8px] border-b border-[#e1e1e1] pb-[20px]">
             <input
@@ -486,6 +495,8 @@ export default function TalentPoolApplyForm({ positions }: { positions: DesiredP
             })}
           </nav>
           {submitButton}
+          {/* 데스크톱은 제출 버튼이 사이드바에 있어 폼 하단 에러가 화면 밖일 수 있음 — 버튼 바로 아래에도 표시 */}
+          {error && <p className="-mt-[16px] text-sm text-[#e0433c]">{error}</p>}
         </div>
       </aside>
     </div>
