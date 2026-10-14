@@ -38,7 +38,7 @@ export function NaverMap({ address }: { address: string }) {
 
   useEffect(() => {
     const naver = window.naver;
-    if (!loaded || !mapRef.current || !naver?.maps) return;
+    if (!loaded || !mapRef.current || !naver?.maps?.Service) return;
 
     const map = new naver.maps.Map(mapRef.current, {
       center: new naver.maps.LatLng(37.5665, 126.978),
@@ -50,7 +50,7 @@ export function NaverMap({ address }: { address: string }) {
         console.error("주소를 찾을 수 없습니다.");
         return;
       }
-      const result = response.v2.addresses[0];
+      const result = response?.v2?.addresses?.[0];
       if (!result) return;
       const coord = new naver.maps.LatLng(parseFloat(result.y), parseFloat(result.x));
       map.setCenter(coord);
@@ -65,7 +65,14 @@ export function NaverMap({ address }: { address: string }) {
       <Script
         src={`https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${NAVER_MAP_CLIENT_ID}&submodules=geocoder`}
         strategy="afterInteractive"
-        onReady={() => setLoaded(true)}
+        onReady={() => {
+          // geocoder 서브모듈은 maps.js 로드 후 비동기로 따로 붙음 — onReady 시점엔 Service가 아직 없을 수 있어
+          // 공식 콜백(onJSContentLoaded)까지 기다림 (2026-10-14 배포 직후 `reading 'geocode'` 크래시 원인)
+          const maps = window.naver?.maps;
+          if (!maps) return;
+          if (maps.Service) setLoaded(true);
+          else maps.onJSContentLoaded = () => setLoaded(true);
+        }}
       />
       <div ref={mapRef} className="h-[200px] w-full" />
       <a
